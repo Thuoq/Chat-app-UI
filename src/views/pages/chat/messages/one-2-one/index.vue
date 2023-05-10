@@ -4,24 +4,18 @@
       <div class="flex py-6 md:px-6 px-3 items-center">
         <div class="flex-1">
           <div class="flex space-x-3 rtl:space-x-reverse">
-            <span
-              v-if="width <= 1024"
-              @click="store.mobileChatSidebar = true"
-              class="text-slate-900 dark:text-white cursor-pointer text-xl self-center ltr:mr-3 rtl:ml-3"
-              ><Icon icon="heroicons-outline:menu-alt-1"
-            /></span>
             <div class="flex-none">
               <div class="h-10 w-10 rounded-full relative">
                 <span
                   :class="
-                    store.user.status === 'active'
+                    targetUser?.status === 'active'
                       ? 'bg-success-500'
                       : 'bg-secondary-500'
                   "
                   class="status ring-1 ring-white inline-block h-[10px] w-[10px] rounded-full absolute -right-0 top-0"
                 ></span>
                 <img
-                  :src="getAvatarSrc(contactStore?.user?.avatarUrl)"
+                  :src="getAvatarSrc(targetUser?.avatarUrl)"
                   alt=""
                   class="w-full h-full object-cover rounded-full"
                 />
@@ -30,7 +24,7 @@
             <div class="flex-1 text-start">
               <span
                 class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px] truncate"
-                >{{ contactStore?.user?.name }}
+                >{{ targetUser?.name }}
               </span>
               <span
                 class="block text-slate-500 dark:text-slate-300 text-xs font-normal"
@@ -62,7 +56,7 @@
       >
         <div
           class="block md:px-6 px-4"
-          v-for="(item, i) in contactChats"
+          v-for="(item, i) in conversation"
           :key="i"
         >
           <div
@@ -90,17 +84,6 @@
                   >{{ formatDateTimeChat(item.createdDatetime) }}</span
                 >
               </div>
-              <div
-                class="opacity-0 invisible group-hover:opacity-100 group-hover:visible"
-              >
-                <Dropdown classMenuItems=" w-[100px] top-0" :items="chatAction">
-                  <div
-                    class="h-8 w-8 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-900 flex flex-col justify-center items-center text-xl rounded-full"
-                  >
-                    <Icon icon="heroicons-outline:dots-horizontal" />
-                  </div>
-                </Dropdown>
-              </div>
             </div>
           </div>
           <!-- sender -->
@@ -109,21 +92,6 @@
             v-if="!isThemSender(item)"
           >
             <div class="no flex space-x-4 rtl:space-x-reverse">
-              <div
-                class="opacity-0 invisible group-hover:opacity-100 group-hover:visible"
-              >
-                <Dropdown
-                  classMenuItems=" w-[100px] left-0 top-0  "
-                  :items="chatAction"
-                >
-                  <div
-                    class="h-8 w-8 bg-slate-300 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full text-slate-900"
-                  >
-                    <Icon icon="heroicons-outline:dots-horizontal" />
-                  </div>
-                </Dropdown>
-              </div>
-
               <div class="whitespace-pre-wrap break-all">
                 <div
                   class="text-contrent p-3 bg-slate-300 dark:bg-slate-900 dark:text-slate-300 text-slate-800 text-sm font-normal rounded-md flex-1 mb-1"
@@ -154,18 +122,7 @@
     >
       <div
         class="flex-none sm:flex hidden md:space-x-3 space-x-1 rtl:space-x-reverse"
-      >
-        <!--        <div-->
-        <!--          class="h-8 w-8 cursor-pointer bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full"-->
-        <!--        >-->
-        <!--          <Icon icon="heroicons-outline:link" />-->
-        <!--        </div>-->
-        <!--        <div-->
-        <!--          class="h-8 w-8 cursor-pointer bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full"-->
-        <!--        >-->
-        <!--          <Icon icon="heroicons-outline:emoji-happy" />-->
-        <!--        </div>-->
-      </div>
+      ></div>
       <div class="flex-1 relative flex space-x-3 rtl:space-x-reverse">
         <div class="flex-1">
           <textarea
@@ -194,43 +151,25 @@
   </div>
 </template>
 <script setup>
-import Dropdown from "@/components/Dropdown";
 import Icon from "@/components/Icon";
-import { computed, ref, onMounted } from "vue";
-import { useChatStore } from "@/store/chat";
-import { useContactStore } from "@/store/contact";
+import { computed, ref } from "vue";
 import { useAuthStore } from "@/store/auth";
 import { format } from "date-fns";
 import { getAvatarSrc } from "@/helpers";
-const width = ref(0);
-const handleResize = () => {
-  width.value = window.innerWidth;
-};
-onMounted(() => {
-  window.addEventListener("resize", handleResize);
-  handleResize();
-});
+import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 const newMessage = ref("");
-const store = useChatStore();
-const contactStore = useContactStore();
+const one2OneStore = useChatOne2OneStore();
 const authStore = useAuthStore();
-const contactChats = computed(() => contactStore.messageFeed);
-const chatheight = ref(null);
-const scrollToBottom = () => {
-  setTimeout(() => {
-    const scrollEl = chatheight.value;
-    scrollEl.scrollTop = scrollEl.scrollHeight - scrollEl.clientHeight;
-  }, 50);
-};
+const targetUser = computed(() => one2OneStore.targetUser);
+const conversation = computed(() => one2OneStore.conversation);
+
 const sendMessage = async () => {
-  // if newMessge empty return
   if (newMessage.value) {
-    await contactStore.sendMessageOne2One({
+    await one2OneStore.sendMessageOne2One({
       content: newMessage.value,
     });
   }
   newMessage.value = "";
-  scrollToBottom();
 };
 const isThemSender = (message) => {
   return message.fromUserId !== authStore.currentUser?.id;
@@ -238,19 +177,6 @@ const isThemSender = (message) => {
 
 const formatDateTimeChat = (timeString) =>
   format(new Date(timeString), "h:mm a");
-const chatAction = [
-  {
-    label: "Remove",
-    link: "#",
-  },
-  {
-    label: "Forward",
-    link: "#",
-  },
-];
-const openinfo = () => {
-  store.notOpenInfo();
-};
 </script>
 <style lang="scss" scoped>
 .msg-height {

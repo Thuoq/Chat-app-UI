@@ -4,8 +4,6 @@ import { apis } from "@/apis";
 export const useContactStore = defineStore("contact", {
   state: () => {
     return {
-      conversations: [],
-      searchUserName: "",
       contacts: [],
       activechat: false,
       mobileChatSidebar: false,

@@ -8,31 +8,23 @@
     </h4>
 
     <p class="text-sm text-slate-500 lg:pt-0 pt-4">
-      <span v-if="window.width > 1024">
-        don't worry, just take a deep breath & say "Hello"</span
-      >
-      <span
-        v-if="window.width <= 1024"
-        class="btn btn-dark cursor-pointer"
-        @click="open"
-        >Start Conversation</span
-      >
+      don't worry, just take a deep breath & say "Hello"
     </p>
   </div>
 </template>
 <script>
 import window from "@/mixins/window";
-import {mapActions} from "pinia";
-import {useChatStore} from "@/store/chat";
-const themeSettingsStore = useChatStore()
+import { mapActions } from "pinia";
+import { useChatStore } from "@/store/chat";
+const themeSettingsStore = useChatStore();
 
 export default {
   mixins: [window],
   methods: {
-    ...mapActions(useChatStore, ['openMobileSidebar']),
-    open(){
+    ...mapActions(useChatStore, ["openMobileSidebar"]),
+    open() {
       themeSettingsStore.openMobileSidebar();
-    }
+    },
   },
 };
 </script>

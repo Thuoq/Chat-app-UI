@@ -68,14 +68,14 @@
 </template>
 
 <script>
-import Icon from '@/components/Icon';
+import Icon from "@/components/Icon";
 
 import {
   TransitionRoot,
   TransitionChild,
   Dialog,
   DialogPanel,
-} from '@headlessui/vue';
+} from "@headlessui/vue";
 
 export default {
   components: {
@@ -93,11 +93,11 @@ export default {
     },
     title: {
       type: String,
-      default: 'Basic Modal',
+      default: "Basic Modal",
     },
     label: {
       type: String,
-      default: 'Basic Modal',
+      default: "Basic Modal",
     },
     disableBackdrop: {
       type: Boolean,
@@ -110,11 +110,11 @@ export default {
     themeClass: {
       type: String,
       default:
-        'bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700',
+        "bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700",
     },
     sizeClass: {
       type: String,
-      default: 'max-w-xl',
+      default: "max-w-xl",
     },
     scrollContent: {
       type: Boolean,
@@ -128,7 +128,7 @@ export default {
 
   setup(props, { emit }) {
     const close = () => {
-      emit('close');
+      emit("close");
     };
     return {
       close,
