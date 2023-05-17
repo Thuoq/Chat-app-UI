@@ -6,7 +6,7 @@
       title="Create Group"
       centered
     >
-      <form @submit.prevent="" class="space-y-4">
+      <form @submit.prevent="onSubmitCreateGroup" class="space-y-4">
         <Textinput
           label="Name Group"
           type="text"
@@ -83,7 +83,6 @@ import { useField, useForm } from "vee-validate";
 import vSelect from "vue-select";
 import { mapState } from "pinia";
 import { getAvatarSrc } from "@/helpers";
-import { useContactStore } from "@/store/contact";
 import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 export default {
   components: {
@@ -108,16 +107,12 @@ export default {
       members: [],
     };
   },
-  watch: {
-    members(val) {
-      console.log(val);
-    },
-  },
   computed: {
     ...mapState(useChatOne2OneStore, ["contacts"]),
   },
   methods: {
     getAvatarSrc,
+    onSubmitCreateGroup() {},
   },
 };
 </script>
