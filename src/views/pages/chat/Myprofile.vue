@@ -16,7 +16,7 @@
             <div class="flex-1 text-start">
               <span
                 class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px]"
-                >{{ currentUser.name }}
+                >{{ currentUser?.name }}
                 <span
                   class="status bg-success-500 inline-block h-[10px] w-[10px] rounded-full ml-3"
                 ></span>
@@ -29,27 +29,16 @@
           </div>
         </div>
         <div class="flex-none">
-          <Tooltip placement="top" arrow v-if="width > 1024">
+          <Tooltip placement="top" arrow>
             <template #button>
               <div
-                @click="store.toggleUserSetting()"
+                @click="layoutChat.toggleUserProfile()"
                 class="h-8 w-8 bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full cursor-pointer"
               >
                 <Icon icon="heroicons-outline:dots-horizontal" />
               </div>
             </template>
             <span>Settings</span>
-          </Tooltip>
-          <Tooltip placement="top" arrow v-if="width < 1024">
-            <template #button>
-              <div
-                @click="store.mobileChatSidebar = false"
-                class="h-8 w-8 bg-slate-100 dark:bg-slate-900 dark:text-slate-400 flex flex-col justify-center items-center text-xl rounded-full cursor-pointer"
-              >
-                <Icon icon="heroicons-outline:x" />
-              </div>
-            </template>
-            <span>close</span>
           </Tooltip>
         </div>
       </div>
@@ -58,14 +47,14 @@
       <Transition name="chat-user-setting">
         <div
           class="overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 absolute bg-white dark:bg-slate-800 rounded-md h-full left-0 top-0 bottom-0 p-6 w-full z-[9]"
-          v-if="store.settingToggle"
+          v-if="layoutChat.openUserProfile"
           data-simplebar
         >
           <div class="text-right">
             <Tooltip placement="top" arrow theme="danger-500">
               <template #button>
                 <div
-                  @click="store.settingToggle = false"
+                  @click="layoutChat.setOpenUserProfile(false)"
                   class="h-8 w-8 bg-slate-100 dark:bg-slate-900 dark:text-slate-400 inline-flex ml-auto flex-col justify-center items-center text-xl rounded-full cursor-pointer"
                 >
                   <Icon icon="heroicons-outline:x" />
@@ -126,16 +115,12 @@
               type="text"
               placeholder="Type your display name"
               name="userName"
-              v-model="username"
-              :error="usernameError"
             />
             <Textinput
               label="Type location"
               type="text"
               placeholder="Type your location "
-              name="userName"
-              v-model="username"
-              :error="usernameError"
+              name="location"
             />
             <div class="mb-8">
               <span class="form-label">Status</span>
@@ -166,64 +151,103 @@
     </header>
   </div>
 </template>
-<script setup>
+<script>
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import Radio from "@/components/Radio";
-
+import { useAuthStore } from "@/store/auth";
 import Textinput from "@/components/Textinput";
 import Tooltip from "@/components/Tooltip";
-import { onMounted, ref } from "vue";
-import { useChatStore } from "@/store/chat";
-import { useAuthStore } from "@/store/auth";
-import { useRouter } from "vue-router";
 import { getAvatarSrc } from "@/helpers";
-// width niye kahini
-const width = ref(0);
-const handleResize = () => {
-  width.value = window.innerWidth;
+import { USER_STATUS } from "@/constant/user-status";
+import { useLayOutChat } from "@/store/layout-chat";
+import { useRouter } from "vue-router";
+export default {
+  components: {
+    Button,
+    Icon,
+    Radio,
+    Textinput,
+    Tooltip,
+  },
+  data() {
+    return {
+      authStore: useAuthStore(),
+      allStatus: USER_STATUS,
+      status: "online",
+      layoutChat: useLayOutChat(),
+      router: useRouter(),
+    };
+  },
+  computed: {
+    currentUser() {
+      return this.authStore.currentUser;
+    },
+  },
+  methods: {
+    getAvatarSrc,
+    async handleLogout() {
+      await this.authStore.handleLogOut();
+      if (!this.currentUser) {
+        await this.router.push("/login");
+      }
+    },
+    async uploadAvatar(event) {
+      const file = event.target.files[0];
+      await this.authStore.updateAvatar(file);
+    },
+    onSubmit() {},
+  },
 };
-onMounted(() => {
-  window.addEventListener("resize", handleResize);
-  handleResize();
-});
-const store = useChatStore();
-const authStore = useAuthStore();
-const currentUser = authStore.currentUser;
-const router = useRouter();
-const status = ref("online");
-const allStatus = ref([
-  {
-    value: "online",
-    label: "Active",
-    activeClass: "ring-success-500 border-success-500",
-  },
-  {
-    value: "busy",
-    label: "Do Not Disturb",
-    activeClass: "ring-danger-500 border-danger-500",
-  },
-  {
-    value: "away",
-    label: "Away",
-    activeClass: "ring-warning-500 border-warning-500",
-  },
-  {
-    value: "offline",
-    label: "Offline",
-    activeClass: "ring-warning-500 border-warning-500",
-  },
-]);
-async function handleLogout() {
-  await authStore.handleLogOut();
-  if (!authStore.currentUser) {
-    await router.push("/login");
-  }
-}
-async function uploadAvatar(event) {
-  const file = event.target.files[0];
-  await authStore.updateAvatar(file);
-}
+// import { onMounted, ref } from "vue";
+// import { useAuthStore } from "@/store/auth";
+// import { useRouter } from "vue-router";
+// import { getAvatarSrc } from "@/helpers";
+// // width niye kahini
+// const width = ref(0);
+// const handleResize = () => {
+//   width.value = window.innerWidth;
+// };
+// onMounted(() => {
+//   window.addEventListener("resize", handleResize);
+//   handleResize();
+// });
+// const authStore = useAuthStore();
+// const currentUser = authStore.currentUser;
+// const router = useRouter();
+// const status = ref("online");
+// const allStatus = ref([
+//   {
+//     value: "online",
+//     label: "Active",
+//     activeClass: "ring-success-500 border-success-500",
+//   },
+//   {
+//     value: "busy",
+//     label: "Do Not Disturb",
+//     activeClass: "ring-danger-500 border-danger-500",
+//   },
+//   {
+//     value: "away",
+//     label: "Away",
+//     activeClass: "ring-warning-500 border-warning-500",
+//   },
+//   {
+//     value: "offline",
+//     label: "Offline",
+//     activeClass: "ring-warning-500 border-warning-500",
+//   },
+// ]);
+// async function handleLogout() {
+//   await authStore.handleLogOut();
+//   if (!authStore.currentUser) {
+//     await router.push("/login");
+//   }
+// }
+// async function uploadAvatar(event) {
+//   const file = event.target.files[0];
+//   await authStore.updateAvatar(file);
+// }
 </script>
 <style lang="scss" scoped>
 .chat-user-setting-enter-active {

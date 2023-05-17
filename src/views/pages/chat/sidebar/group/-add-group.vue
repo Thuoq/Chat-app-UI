@@ -72,18 +72,19 @@
   </div>
 </template>
 <script>
-import Button from "@/components/Button";
-import FromGroup from "@/components/FromGroup";
-import Modal from "@/components/Modal";
-import VueSelect from "@/components/Select/VueSelect";
-import Textarea from "@/components/Textarea";
-import Textinput from "@/components/Textinput";
-import Fileinput from "@/components/Fileinput";
+import Button from "@/components/Button/index.vue";
+import FromGroup from "@/components/FromGroup/index.vue";
+import Modal from "@/components/Modal/index.vue";
+import VueSelect from "@/components/Select/VueSelect.vue";
+import Textarea from "@/components/Textarea/index.vue";
+import Textinput from "@/components/Textinput/index.vue";
+import Fileinput from "@/components/Fileinput/index.vue";
 import { useField, useForm } from "vee-validate";
 import vSelect from "vue-select";
 import { mapState } from "pinia";
 import { getAvatarSrc } from "@/helpers";
 import { useContactStore } from "@/store/contact";
+import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 export default {
   components: {
     Button,
@@ -113,7 +114,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useContactStore, ["contacts"]),
+    ...mapState(useChatOne2OneStore, ["contacts"]),
   },
   methods: {
     getAvatarSrc,

@@ -15,7 +15,7 @@
               :class="{
                 'border-blue-500': activeTab === MESSAGE_OPTIONS.One2One.value,
               }"
-              @click="activeTab = MESSAGE_OPTIONS.One2One.value"
+              @click="toggleOne2OneTab"
             >
               Contacts
             </button>
@@ -24,16 +24,16 @@
               :class="{
                 'border-blue-500': activeTab === MESSAGE_OPTIONS.Group.value,
               }"
-              @click="activeTab = MESSAGE_OPTIONS.Group.value"
+              @click="toggleGroupTab"
             >
               Group
             </button>
           </div>
           <div v-show="activeTab === MESSAGE_OPTIONS.One2One.value">
-            <Contact />
+            <One2OneSideBar />
           </div>
           <div v-show="activeTab === MESSAGE_OPTIONS.Group.value">
-            <Group />
+            <GroupSideBar />
           </div>
         </div>
       </Card>
@@ -48,7 +48,7 @@
             </template>
             <template v-else>
               <GroupChatBox v-if="isGroupChatActiveChat" />
-              <GroupChatBox v-else />
+              <Blank v-else />
             </template>
           </Card>
         </div>
@@ -59,17 +59,17 @@
 <script>
 import Card from "@/components/Card";
 import Blank from "./Blank.vue";
-import Contact from "./-contract.vue";
+import One2OneSideBar from "./sidebar/one-2-one/index.vue";
 import One2OneChatBox from "./messages/one-2-one/index.vue";
 import GroupChatBox from "./messages/group/index.vue";
+import GroupSideBar from "./sidebar/group/index.vue";
 import Myprofile from "./Myprofile.vue";
-import Group from "./-group.vue";
 import window from "@/mixins/window";
-import { mapActions, mapState } from "pinia";
+import { mapState } from "pinia";
 import { useAuthStore } from "@/store/auth";
-import { useContactStore } from "@/store/contact";
 import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 import { useChatGroupStore } from "@/store/chat-group";
+import { useRouter } from "vue-router";
 const MESSAGE_OPTIONS = {
   One2One: {
     value: 1,
@@ -83,8 +83,8 @@ export default {
   components: {
     Card,
     Blank,
-    Group,
-    Contact,
+    GroupSideBar,
+    One2OneSideBar,
     GroupChatBox,
     Myprofile,
     One2OneChatBox,
@@ -95,6 +95,7 @@ export default {
       activeTab: MESSAGE_OPTIONS.One2One.value,
       one2OneStore: useChatOne2OneStore(),
       groupChatStore: useChatGroupStore(),
+      router: useRouter(),
     };
   },
   // beforeRouteLeave activechat make false
@@ -104,13 +105,14 @@ export default {
   },
   async created() {
     if (!this.currentUser) {
-      await this.$router.push("/login");
+      await this.router.push("/login");
     } else {
-      await this.getContactsByUser();
+      if (this.isOne2OneChat) {
+        await this.one2OneStore.getContactsByUser();
+      } else {
+        await this.groupChatStore.getGroups();
+      }
     }
-  },
-  methods: {
-    ...mapActions(useContactStore, ["getContactsByUser"]),
   },
   computed: {
     ...mapState(useAuthStore, ["currentUser"]),
@@ -122,6 +124,16 @@ export default {
     },
     isGroupChatActiveChat() {
       return this.groupChatStore.isActiveChat;
+    },
+  },
+  methods: {
+    async toggleOne2OneTab() {
+      this.activeTab = MESSAGE_OPTIONS.One2One.value;
+      await this.one2OneStore.getContactsByUser();
+    },
+    async toggleGroupTab() {
+      this.activeTab = MESSAGE_OPTIONS.Group.value;
+      await this.groupChatStore.getGroups();
     },
   },
 };

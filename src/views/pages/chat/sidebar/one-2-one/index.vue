@@ -56,19 +56,29 @@
     </div>
   </div>
 </template>
-<script setup>
+<script>
 import Icon from "@/components/Icon";
-import { useContactStore } from "@/store/contact";
 import { getAvatarSrc } from "@/helpers";
-import { computed, ref } from "vue";
 import { useChatOne2OneStore } from "@/store/chat-one-two-one";
-
-const contactStore = useContactStore();
-const one2OneStore = useChatOne2OneStore();
-const searchContact = ref("");
-
-const contacts = computed(() => contactStore.contacts);
-function openChat(contact) {
-  one2OneStore.openChat(contact);
-}
+import { mapState } from "pinia";
+export default {
+  components: {
+    Icon,
+  },
+  data() {
+    return {
+      one2OneStore: useChatOne2OneStore(),
+      searchContact: "",
+    };
+  },
+  computed: {
+    ...mapState(useChatOne2OneStore, ["contacts"]),
+  },
+  methods: {
+    getAvatarSrc,
+    openChat(contact) {
+      this.one2OneStore.openChat(contact);
+    },
+  },
+};
 </script>

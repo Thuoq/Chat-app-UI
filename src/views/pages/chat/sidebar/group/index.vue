@@ -24,7 +24,7 @@
   <div class="contact-height" data-simplebar>
     <div class="divide-y divide-slate-100 dark:divide-slate-700">
       <div
-        v-for="(item, i) in [1, 2, 3]"
+        v-for="(item, i) in groups"
         :key="i"
         class="block w-full py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
       >
@@ -78,8 +78,10 @@
 <script>
 import AddGroup from "./-add-group.vue";
 import Icon from "@/components/Icon";
-import { useContactStore } from "@/store/contact";
 import { getAvatarSrc } from "@/helpers";
+import { mapState } from "pinia";
+import { useChatGroupStore } from "@/store/chat-group";
+import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 export default {
   components: {
     AddGroup,
@@ -88,15 +90,18 @@ export default {
   data() {
     return {
       isAddGroupOpen: false,
-      contactStore: useContactStore(),
       searchGroup: "",
+      chatOne2One: useChatOne2OneStore(),
     };
+  },
+  computed: {
+    ...mapState(useChatGroupStore, ["groups"]),
   },
   methods: {
     getAvatarSrc,
     async openAddGroup() {
       this.isAddGroupOpen = true;
-      await this.contactStore?.getContactsByUser();
+      await this.chatOne2One.getContactsByUser();
     },
     closeAddGroup() {
       this.isAddGroupOpen = false;

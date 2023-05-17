@@ -76,7 +76,7 @@
   <AddGroup :open-modal="isAddGroupOpen" @close-modal="closeAddGroup" />
 </template>
 <script>
-import AddGroup from "./-add-group.vue";
+import AddGroup from "./sidebar/group/-add-group.vue";
 import Icon from "@/components/Icon";
 import { useContactStore } from "@/store/contact";
 import { getAvatarSrc } from "@/helpers";
@@ -96,7 +96,7 @@ export default {
     getAvatarSrc,
     async openAddGroup() {
       this.isAddGroupOpen = true;
-      await this.contactStore?.getContactsByUser();
+      // await this.contactStore?.getContactsByUser();
     },
     closeAddGroup() {
       this.isAddGroupOpen = false;

@@ -4,7 +4,6 @@ import { apis } from "@/apis";
 export const useContactStore = defineStore("contact", {
   state: () => {
     return {
-      contacts: [],
       activechat: false,
       mobileChatSidebar: false,
       user: null,
@@ -13,13 +12,6 @@ export const useContactStore = defineStore("contact", {
     };
   },
   actions: {
-    async getContactsByUser() {
-      const {
-        data: { metadata },
-      } = await apis.chatApi.get("/contacts");
-
-      this.contacts = metadata?.contacts?.slice(0, 3) || [];
-    },
     async openChat(item) {
       this.activechat = true;
       this.mobileChatSidebar = false;
