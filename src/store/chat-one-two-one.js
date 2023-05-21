@@ -15,7 +15,7 @@ export const useChatOne2OneStore = defineStore("chat-one-2-one", {
         data: { metadata },
       } = await apis.chatApi.get("/contacts");
 
-      this.contacts = metadata?.contacts?.slice(0, 3) || [];
+      this.contacts = metadata?.contacts || [];
     },
     async openChat(user) {
       this.isActiveChat = true;

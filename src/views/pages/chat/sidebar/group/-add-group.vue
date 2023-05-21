@@ -6,16 +6,16 @@
       title="Create Group"
       centered
     >
-      <form @submit.prevent="onSubmitCreateGroup" class="space-y-4">
+      <form @submit.prevent="onSubmit" class="space-y-4">
         <Textinput
           label="Name Group"
           type="text"
           placeholder="Name Group"
-          name="title"
+          name="name"
           v-model.trim="name"
         />
         <div class="assagin space-y-4">
-          <VueSelect label="Members">
+          <VueSelect label="Members" name="members">
             <vSelect
               :options="contacts"
               label="name"
@@ -61,11 +61,20 @@
           >
             Avatar Group</label
           >
-          <Fileinput placeholder="Default" id="avatar" name="default" />
+          <Fileinput
+            placeholder="Default"
+            name="default"
+            @input="onAvatarChange"
+          />
         </div>
 
         <div class="ltr:text-right rtl:text-left space-y-1">
-          <Button text="Create Group" btnClass="btn-dark w-full"></Button>
+          <Button
+            type="submit"
+            text="Create Group"
+            btnClass="btn-dark w-full"
+            @click="onSubmit()"
+          ></Button>
         </div>
       </form>
     </Modal>
@@ -73,25 +82,22 @@
 </template>
 <script>
 import Button from "@/components/Button/index.vue";
-import FromGroup from "@/components/FromGroup/index.vue";
 import Modal from "@/components/Modal/index.vue";
 import VueSelect from "@/components/Select/VueSelect.vue";
-import Textarea from "@/components/Textarea/index.vue";
 import Textinput from "@/components/Textinput/index.vue";
 import Fileinput from "@/components/Fileinput/index.vue";
-import { useField, useForm } from "vee-validate";
 import vSelect from "vue-select";
 import { mapState } from "pinia";
 import { getAvatarSrc } from "@/helpers";
 import { useChatOne2OneStore } from "@/store/chat-one-two-one";
+import { useChatGroupStore } from "@/store/chat-group";
+
 export default {
   components: {
     Button,
-    FromGroup,
     Modal,
     VueSelect,
     Textinput,
-    Textarea,
     vSelect,
     Fileinput,
   },
@@ -103,8 +109,10 @@ export default {
   },
   data() {
     return {
-      name: "",
       members: [],
+      name: "",
+      avatarFile: null,
+      chatGroupStore: useChatGroupStore(),
     };
   },
   computed: {
@@ -112,7 +120,19 @@ export default {
   },
   methods: {
     getAvatarSrc,
-    onSubmitCreateGroup() {},
+    onAvatarChange(e) {
+      this.avatarFile = e;
+    },
+    async onSubmit() {
+      const payload = {
+        memberIds: this.members,
+        name: this.name,
+        file: this.avatarFile,
+      };
+      await this.chatGroupStore.createGroup(payload);
+      this.$emit("close-modal");
+    },
   },
 };
 </script>
+<style lang="scss" scoped></style>

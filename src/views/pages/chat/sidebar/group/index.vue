@@ -21,12 +21,12 @@
       />
     </div>
   </div>
-  <div class="contact-height" data-simplebar>
+  <div class="contact-height overflow-y-auto">
     <div class="divide-y divide-slate-100 dark:divide-slate-700">
       <div
         v-for="(item, i) in groups"
         :key="i"
-        class="block w-full py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
+        class="py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
       >
         <div class="flex space-x-3 px-6 rtl:space-x-reverse">
           <div class="flex-none">
@@ -51,21 +51,6 @@
               <span
                 class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px]"
                 >{{ item?.name }}</span
-              >
-              <!--            <span-->
-              <!--              class="block text-slate-600 dark:text-slate-300 text-xs font-normal"-->
-              <!--              >{{ item.lastmessage.slice(0, 14) + "..." }}</span-->
-              <!--            >-->
-            </div>
-            <div class="flex-none ltr:text-right rtl:text-end">
-              <span
-                class="block text-xs text-slate-400 dark:text-slate-400 font-normal"
-                >12:20 pm</span
-              >
-              <span
-                v-if="item?.unredmessage > 0"
-                class="inline-flex flex-col items-center justify-center text-[10px] font-medium w-4 h-4 bg-[#FFC155] text-white rounded-full"
-                >{{ item?.unredmessage }}</span
               >
             </div>
           </div>
@@ -92,7 +77,11 @@ export default {
       isAddGroupOpen: false,
       searchGroup: "",
       chatOne2One: useChatOne2OneStore(),
+      chatGroup: useChatGroupStore(),
     };
+  },
+  async created() {
+    await this.chatGroup.getGroups();
   },
   computed: {
     ...mapState(useChatGroupStore, ["groups"]),
@@ -109,3 +98,8 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.contact-height {
+  height: 500px;
+}
+</style>
