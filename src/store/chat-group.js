@@ -3,7 +3,7 @@ import { apis } from "@/apis";
 
 export const useChatGroupStore = defineStore("chat-group", {
   state: () => ({
-    targetGroup: null,
+    conversation: null,
     messagesFeed: [],
     isActiveChat: false,
     groups: [],
@@ -38,21 +38,21 @@ export const useChatGroupStore = defineStore("chat-group", {
     setActiveChat(val) {
       this.isActiveChat = Boolean(val);
     },
-    async openChat(group) {
+    async openChat(conversation) {
       this.isActiveChat = true;
       const {
         data: { metadata },
-      } = await apis.chatApi.get(
-        `/messages/one-2-one?targetUserId=${group.id}`
-      );
-      this.conversation = metadata?.messages || [];
-      this.targetGroup = group;
+      } = await apis.chatApi.get(`/messages/group/${conversation.id}`);
+      this.messagesFeed = metadata?.messages || [];
+      this.conversation = conversation;
     },
-    async sendMessageOne2One({ content }) {
-      await apis.chatApi.post("/messages/one-2-one/send-message", {
-        content,
-        targetUserId: this.targetUser?.id,
-      });
+    async sendMessage2Group({ content }) {
+      await apis.chatApi.post(
+        `/messages/group/${this.conversation.id}/send-message`,
+        {
+          content,
+        }
+      );
     },
     async getGroups() {
       const {

@@ -26,6 +26,7 @@
       <div
         v-for="(item, i) in groups"
         :key="i"
+        @click="openChat(item)"
         class="py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
       >
         <div class="flex space-x-3 px-6 rtl:space-x-reverse">
@@ -94,6 +95,9 @@ export default {
     },
     closeAddGroup() {
       this.isAddGroupOpen = false;
+    },
+    async openChat(group) {
+      await this.chatGroup.openChat(group);
     },
   },
 };

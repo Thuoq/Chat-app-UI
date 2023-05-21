@@ -47,10 +47,9 @@
           </div>
         </div>
       </div>
-      <div class="flex-none md:pr-0 pr-3">
+      <div class="flex-none md:pr-0 pr-3" @click="sendMessage">
         <button
           type="button"
-          @click="sendMessage"
           class="h-8 w-8 bg-slate-900 text-white flex flex-col justify-center items-center text-lg rounded-full"
         >
           <Icon
@@ -75,8 +74,9 @@ export default {
     };
   },
   methods: {
-    sendMessage() {
+    async sendMessage() {
       // send message with this.newMessage and this.imageUrls to backend
+      await this.chatGroupStore.sendMessage2Group({ content: this.newMessage });
       this.newMessage = "";
       this.imageUrls = [];
     },

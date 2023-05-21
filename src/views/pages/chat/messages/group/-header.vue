@@ -6,7 +6,7 @@
           <div class="flex-none relative">
             <div class="h-10 w-10 rounded-full relative">
               <img
-                :src="getAvatarSrc()"
+                :src="getAvatarSrc(conversation?.avatarUrl)"
                 alt=""
                 class="w-full h-full object-cover rounded-full"
               />
@@ -31,7 +31,7 @@
               class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px] truncate min-w-[50px] p-1 rounded w-24"
               contenteditable="true"
               @blur="updateName"
-              >{{ name }}</span
+              >{{ conversation?.name }}</span
             >
           </div>
         </div>
@@ -57,14 +57,14 @@
 <script>
 import { getAvatarSrc } from "@/helpers";
 import Icon from "@/components/Icon";
+import { mapState } from "pinia";
+import { useChatGroupStore } from "@/store/chat-group";
 export default {
   components: {
     Icon,
   },
-  data() {
-    return {
-      name: "thuong",
-    };
+  computed: {
+    ...mapState(useChatGroupStore, ["conversation"]),
   },
   methods: {
     getAvatarSrc,
@@ -77,6 +77,7 @@ export default {
       // Call your backend API to update the user's avatar with the new image
       // ...
     },
+    openinfo() {},
   },
 };
 </script>
