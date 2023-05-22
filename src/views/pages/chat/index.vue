@@ -41,17 +41,37 @@
     <div class="flex-1">
       <div class="parent flex space-x-5 h-full rtl:space-x-reverse">
         <div class="flex-1">
-          <Card bodyClass="p-0 h-full" className="h-full">
-            <template v-if="isOne2OneChat">
-              <One2OneChatBox v-if="isOne2OneActiveChat" />
-              <Blank v-else />
-            </template>
-            <template v-else>
-              <GroupChatBox v-if="isGroupChatActiveChat" />
-              <Blank v-else />
-            </template>
-          </Card>
+          <Transition name="fade-slide" mode="out-in">
+            <Card bodyClass="p-0 h-full" className="h-full">
+              <template v-if="isOne2OneChat">
+                <One2OneChatBox v-if="isOne2OneActiveChat" />
+                <Blank v-else />
+              </template>
+              <template v-else>
+                <GroupChatBox v-if="isGroupChatActiveChat" />
+                <Blank v-else />
+              </template>
+            </Card>
+          </Transition>
         </div>
+        <Transition name="slide" mode="out-in">
+          <div
+            class="flex-none w-[285px]"
+            v-if="!isOne2OneChat && openInfoGroup"
+          >
+            <Card bodyClass="p-0 h-full">
+              <InformationGroup />
+            </Card>
+          </div>
+          <div
+            class="flex-none w-[285px]"
+            v-else-if="isOne2OneChat && openInfoUser"
+          >
+            <Card bodyClass="p-0 h-full">
+              <InformationOne2One />
+            </Card>
+          </div>
+        </Transition>
       </div>
     </div>
   </div>
@@ -70,6 +90,8 @@ import { useAuthStore } from "@/store/auth";
 import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 import { useChatGroupStore } from "@/store/chat-group";
 import { useRouter } from "vue-router";
+import InformationGroup from "./information/group/index.vue";
+import InformationOne2One from "./information/one-2-one/index.vue";
 const MESSAGE_OPTIONS = {
   One2One: {
     value: 1,
@@ -88,6 +110,8 @@ export default {
     GroupChatBox,
     Myprofile,
     One2OneChatBox,
+    InformationGroup,
+    InformationOne2One,
   },
   data() {
     return {
@@ -116,6 +140,8 @@ export default {
   },
   computed: {
     ...mapState(useAuthStore, ["currentUser"]),
+    ...mapState(useChatOne2OneStore, ["openInfoUser"]),
+    ...mapState(useChatGroupStore, ["openInfoGroup"]),
     isOne2OneChat() {
       return this.activeTab === MESSAGE_OPTIONS.One2One.value;
     },

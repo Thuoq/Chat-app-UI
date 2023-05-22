@@ -39,18 +39,26 @@
       <div
         class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse"
       >
-        <div class="msg-action-btn">
+        <div class="msg-action-btn" @click="openCallPopup">
           <Icon icon="heroicons-outline:phone" />
         </div>
-        <div class="msg-action-btn">
+        <div class="msg-action-btn" @click="openVideoCall">
           <Icon icon="heroicons-outline:video-camera" />
         </div>
 
-        <div @click="openinfo" class="msg-action-btn">
+        <div @click="chatGroupStore.openTabInfoGroup" class="msg-action-btn">
           <Icon icon="heroicons-outline:dots-horizontal" />
         </div>
       </div>
     </div>
+    <PhoneCall
+      :show-modal="showCallPopup"
+      @close-phone-call="showCallPopup = false"
+    />
+    <VideoCall
+      :show-modal="showVideoCallPopup"
+      @close-video-call="showVideoCallPopup = false"
+    />
   </header>
 </template>
 
@@ -59,9 +67,20 @@ import { getAvatarSrc } from "@/helpers";
 import Icon from "@/components/Icon";
 import { mapState } from "pinia";
 import { useChatGroupStore } from "@/store/chat-group";
+import PhoneCall from "./-phone-call.vue";
+import VideoCall from "./-video-call.vue";
 export default {
   components: {
     Icon,
+    PhoneCall,
+    VideoCall,
+  },
+  data() {
+    return {
+      showVideoCallPopup: false,
+      showCallPopup: false,
+      chatGroupStore: useChatGroupStore(),
+    };
   },
   computed: {
     ...mapState(useChatGroupStore, ["conversation"]),
@@ -78,6 +97,15 @@ export default {
       // ...
     },
     openinfo() {},
+    openCallPopup() {
+      this.showCallPopup = true;
+      this.showVideoCallPopup = false;
+    },
+    openVideoCall() {
+      this.showVideoCallPopup = true;
+
+      this.showCallPopup = false;
+    },
   },
 };
 </script>

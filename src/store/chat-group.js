@@ -3,6 +3,7 @@ import { apis } from "@/apis";
 
 export const useChatGroupStore = defineStore("chat-group", {
   state: () => ({
+    openInfoGroup: false,
     conversation: null,
     messagesFeed: [],
     isActiveChat: false,
@@ -61,6 +62,12 @@ export const useChatGroupStore = defineStore("chat-group", {
         },
       } = await apis.chatApi.get(`conversations/groups`);
       this.groups = conversations || [];
+    },
+    closeInfoGroup() {
+      this.openInfoGroup = false;
+    },
+    openTabInfoGroup() {
+      this.openInfoGroup = true;
     },
   },
 });
