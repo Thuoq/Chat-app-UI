@@ -13,19 +13,7 @@
   </div>
 </template>
 <script>
-import window from "@/mixins/window";
-import { mapActions } from "pinia";
-import { useChatStore } from "@/store/chat";
-const themeSettingsStore = useChatStore();
-
 export default {
   mixins: [window],
-  methods: {
-    ...mapActions(useChatStore, ["openMobileSidebar"]),
-    open() {
-      themeSettingsStore.openMobileSidebar();
-    },
-  },
 };
 </script>
-<style lang=""></style>

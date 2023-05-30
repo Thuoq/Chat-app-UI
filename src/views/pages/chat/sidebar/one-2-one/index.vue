@@ -16,7 +16,7 @@
   <div class="contact-height overflow-y-auto">
     <div class="divide-y divide-slate-100 dark:divide-slate-700">
       <div
-        v-for="(item, i) in contacts"
+        v-for="(item, i) in conversations"
         :key="i"
         class="py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
         @click="openChat(item)"
@@ -55,25 +55,25 @@
 <script>
 import Icon from "@/components/Icon";
 import { getAvatarSrc } from "@/helpers";
-import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 import { mapState } from "pinia";
+import { useChatStore } from "@/store/chat";
 export default {
   components: {
     Icon,
   },
   data() {
     return {
-      one2OneStore: useChatOne2OneStore(),
+      chatStore: useChatStore(),
       searchContact: "",
     };
   },
   computed: {
-    ...mapState(useChatOne2OneStore, ["contacts"]),
+    ...mapState(useChatStore, ["conversations"]),
   },
   methods: {
     getAvatarSrc,
-    openChat(contact) {
-      this.one2OneStore.openChat(contact);
+    async openChat(contact) {
+      await this.chatStore.openChat(contact);
     },
   },
 };

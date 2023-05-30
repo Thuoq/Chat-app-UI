@@ -199,55 +199,6 @@ export default {
     onSubmit() {},
   },
 };
-// import { onMounted, ref } from "vue";
-// import { useAuthStore } from "@/store/auth";
-// import { useRouter } from "vue-router";
-// import { getAvatarSrc } from "@/helpers";
-// // width niye kahini
-// const width = ref(0);
-// const handleResize = () => {
-//   width.value = window.innerWidth;
-// };
-// onMounted(() => {
-//   window.addEventListener("resize", handleResize);
-//   handleResize();
-// });
-// const authStore = useAuthStore();
-// const currentUser = authStore.currentUser;
-// const router = useRouter();
-// const status = ref("online");
-// const allStatus = ref([
-//   {
-//     value: "online",
-//     label: "Active",
-//     activeClass: "ring-success-500 border-success-500",
-//   },
-//   {
-//     value: "busy",
-//     label: "Do Not Disturb",
-//     activeClass: "ring-danger-500 border-danger-500",
-//   },
-//   {
-//     value: "away",
-//     label: "Away",
-//     activeClass: "ring-warning-500 border-warning-500",
-//   },
-//   {
-//     value: "offline",
-//     label: "Offline",
-//     activeClass: "ring-warning-500 border-warning-500",
-//   },
-// ]);
-// async function handleLogout() {
-//   await authStore.handleLogOut();
-//   if (!authStore.currentUser) {
-//     await router.push("/login");
-//   }
-// }
-// async function uploadAvatar(event) {
-//   const file = event.target.files[0];
-//   await authStore.updateAvatar(file);
-// }
 </script>
 <style lang="scss" scoped>
 .chat-user-setting-enter-active {

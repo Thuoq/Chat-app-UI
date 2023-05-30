@@ -4,14 +4,10 @@
     <div class="chat-content parent-height">
       <div
         class="msgs overflow-y-autooverflow msg-height pt-6 space-y-6"
-        ref="chatheight"
+        ref="chatWindow"
       >
         <div class="block md:px-6"></div>
-        <div
-          class="block md:px-6 px-4"
-          v-for="(item, i) in messagesFeed"
-          :key="i"
-        >
+        <div class="block md:px-6 px-4" v-for="(item, i) in messages" :key="i">
           <div
             class="flex space-x-2 items-start group rtl:space-x-reverse"
             v-if="isThemSender(item)"
@@ -70,7 +66,7 @@
         </div>
       </div>
     </div>
-    <Footer />
+    <Footer @send-message="onSendMessage" />
   </div>
 </template>
 <script>
@@ -78,23 +74,27 @@ import Header from "./-header.vue";
 import Footer from "./-footer.vue";
 import { useAuthStore } from "@/store/auth";
 import { mapState } from "pinia";
-import { useChatGroupStore } from "@/store/chat-group";
 import { getAvatarSrc, formatDateTimeChat } from "@/helpers";
+import { useChatStore } from "@/store/chat";
 export default {
   components: { Header, Footer },
   data() {
     return {
       authStore: useAuthStore(),
+      chatStore: useChatStore(),
     };
   },
   computed: {
-    ...mapState(useChatGroupStore, ["messagesFeed"]),
+    ...mapState(useChatStore, ["messages"]),
   },
   methods: {
     formatDateTimeChat,
     getAvatarSrc,
     isThemSender(message) {
       return message.fromUserId !== this.authStore.currentUser?.id;
+    },
+    async onSendMessage(payload) {
+      await this.chatStore.sendMessage(payload);
     },
   },
 };

@@ -1,252 +1,97 @@
 import { defineStore } from "pinia";
-import user1Img from "@/assets/images/users/user-1.jpg";
-import user2Img from "@/assets/images/users/user-2.jpg";
-import user3Img from "@/assets/images/users/user-3.jpg";
-import user4Img from "@/assets/images/users/user-4.jpg";
-import user5Img from "@/assets/images/users/user-5.jpg";
-import user6Img from "@/assets/images/users/user-6.jpg";
+import { MESSAGE_OPTIONS, CHAT_ACTION_URL } from "@/constant/chat";
+import { apis } from "@/apis";
 
 export const useChatStore = defineStore("chat", {
-  state: () => {
-    return {
-      settingToggle: false,
-      openinfo: true,
-      activechat: false,
-      searchContact: "",
-      mobileChatSidebar: false,
-      profileinfo: {},
-      messFeed: [],
-      user: {},
-      contacts: [
-        {
-          id: 1,
-          fullName: "Kathryn Murphy",
-          role: "Frontend Developer",
-          lastmessage: "Hey! there I'm available",
-          lastmessageTime: "2:30 PM",
-          unredmessage: Math.floor(Math.random() * 10),
-          avatar: user2Img,
-          status: "offline",
-        },
-        {
-          id: 2,
-          fullName: "Felecia Rower",
-          role: " UI/UX Designer",
-          lastmessage: "Hey! there I'm available",
-          lastmessageTime: "2:30 PM",
-          unredmessage: Math.floor(Math.random() * 10),
-          avatar: user3Img,
-          status: "active",
-        },
-        {
-          id: 3,
-          fullName: " Aileen Chavez",
-          role: " Backend Developer",
-          lastmessage: "Hey! there I'm available",
-          lastmessageTime: "2:30 PM",
-          unredmessage: Math.floor(Math.random() * 10),
-          avatar: user4Img,
-          status: "offline",
-        },
-        {
-          id: 4,
-          fullName: "Alec Thompson",
-          role: " Full Stack Developer",
-          lastmessage: "Hey! there I'm available",
-          lastmessageTime: "2:30 PM",
-          unredmessage: Math.floor(Math.random() * 10),
-          avatar: user5Img,
-          status: "active",
-        },
-        {
-          id: 5,
-          fullName: "Murphy Aileen",
-          role: "Frontend Developer",
-          lastmessage: "Hey! there I'm available",
-          lastmessageTime: "2:30 PM",
-          unredmessage: Math.floor(Math.random() * 10),
-          avatar: user6Img,
-          status: "offline",
-        },
-      ],
-      chats: [
-        {
-          id: 1,
-          userId: 1,
-          messages: [
-            {
-              img: user2Img,
-              content: "Hey! How are you?",
-              time: "10:00",
-              sender: "them",
-            },
-            {
-              img: user2Img,
-              content: "Good, I will book the meeting room for you.",
-              time: "10:02",
-
-              sender: "them",
-            },
-            {
-              content: "Hi, I am good, what about you?",
-              img: user1Img,
-              time: "10:01",
-              sender: "me",
-            },
-
-            {
-              content: "Thanks, It will be great.",
-              img: user1Img,
-              time: "10:03",
-              sender: "me",
-            },
-            {
-              img: user2Img,
-              content: "Hey! How are you?",
-              time: "10:00",
-              sender: "them",
-            },
-            {
-              img: user2Img,
-              content: "Good, I will book the meeting room for you.",
-              time: "10:02",
-
-              sender: "them",
-            },
-            {
-              content: "Hi, I am good, what about you?",
-              img: user1Img,
-              time: "10:01",
-              sender: "me",
-            },
-
-            {
-              content: "Thanks, It will be great.",
-              img: user1Img,
-              time: "10:03",
-              sender: "me",
-            },
-          ],
-        },
-        {
-          id: 2,
-          userId: 2,
-          messages: [
-            {
-              img: user2Img,
-              content: "Hey! How are you?",
-              time: "10:00",
-              sender: "them",
-            },
-            {
-              img: user2Img,
-              content: "Good, I will book the meeting room for you.",
-              time: "10:02",
-
-              sender: "them",
-            },
-          ],
-        },
-        {
-          id: 3,
-          userId: 3,
-          messages: [
-            {
-              img: user2Img,
-              content: "Hey! How are you?",
-              time: "10:00",
-              sender: "them",
-            },
-            {
-              img: user2Img,
-              content: "Good, I will book the meeting room for you.",
-              time: "10:02",
-
-              sender: "me",
-            },
-          ],
-        },
-        {
-          id: 4,
-          userId: 4,
-          messages: [
-            {
-              img: user2Img,
-              content: "Hey! How are you?",
-              time: "10:00",
-              sender: "me",
-            },
-            {
-              img: user2Img,
-              content: "Good, I will book the meeting room for you.",
-              time: "10:02",
-
-              sender: "them",
-            },
-          ],
-        },
-        {
-          id: 5,
-          userId: 5,
-          messages: [
-            {
-              img: user2Img,
-              content: "Hey! How are you?",
-              time: "10:00",
-              sender: "them",
-            },
-            {
-              img: user2Img,
-              content: "Good, I will book the meeting room for you.",
-              time: "10:02",
-
-              sender: "them",
-            },
-          ],
-        },
-      ],
-    };
-  },
+  state: () => ({
+    activeTab: MESSAGE_OPTIONS.One2One.value,
+    showDetail: false,
+    showChatWindow: false,
+    messages: [],
+    conversations: [],
+    targetConversation: null,
+  }),
   getters: {
-    getprofileinfo: (state) => state.profileinfo,
-    // get contacts with search
-    getContacts: (state) => {
-      if (state.searchContact) {
-        return state.contacts.filter((contact) =>
-          contact.fullName
-            .toLowerCase()
-            .includes(state.searchContact.toLowerCase())
-        );
-      } else {
-        return state.contacts;
-      }
+    isOne2OneTab(state) {
+      return state.activeTab === MESSAGE_OPTIONS.One2One.value;
     },
-    getChats: (state) => state.chats,
+    isGroupTab(state) {
+      return state.activeTab === MESSAGE_OPTIONS.Group.value;
+    },
   },
   actions: {
-    toggleUserSetting() {
-      this.settingToggle = !this.settingToggle;
+    generateUrl(actionType, paramUrl) {
+      const currentTab = this.activeTab;
+      const currentLabel = Object.values(MESSAGE_OPTIONS).find(
+        (option) => option.value === currentTab
+      ).label;
+      const action = CHAT_ACTION_URL[actionType][currentLabel];
+      return action.getUrl(paramUrl);
     },
-    sendMessage(payload) {
-      this.messFeed.push(payload);
+    async getConversations() {
+      const url = this.generateUrl("getConversations");
+      const {
+        data: { metadata },
+      } = await apis.chatApi.get(url);
+      let conversations = metadata?.conversations || [];
+      if (this.isOne2OneTab && metadata?.conversations.length) {
+        conversations = conversations.map((conversaion) => {
+          const message = conversaion.messages[0];
+          const nameReceivedUser = message?.receivedBy?.name || "";
+          const avatarUrl = message?.receivedBy?.avatarUrl || null;
+          const targetUserId = message?.receivedBy.id;
+          return {
+            ...conversaion,
+            name: nameReceivedUser,
+            avatarUrl,
+            targetUserId,
+          };
+        });
+      }
+      this.conversations = conversations;
     },
-    //openinfo
-    notOpenInfo() {
-      this.openinfo = !this.openinfo;
-    },
-    //open chat
-    openChat(data) {
-      this.activechat = true;
-      this.mobileChatSidebar = false;
-      this.user = data;
-      this.chats.map((item) => {
-        if (item.userId === data.id) {
-          this.messFeed = item.messages;
-        }
+    async sendMessage({ content, imageUrls = [] }) {
+      const url = this.generateUrl("sendMessage", {
+        conversationId: this.targetConversation.id,
+      });
+      await apis.chatApi.post(url, {
+        content,
+        imageUrls,
+        targetUserId: this.targetConversation?.targetUserId || null,
       });
     },
-    openMobileSidebar() {
-      this.mobileChatSidebar = !this.mobileChatSidebar;
+    async openChat(conversation) {
+      this.showChatWindow = true;
+      const url = this.generateUrl("getMessages", {
+        conversationId: conversation.id,
+      });
+      const {
+        data: { metadata },
+      } = await apis.chatApi.get(url);
+      this.messages = metadata?.messages || [];
+      this.targetConversation = conversation;
+    },
+    resetStoreWhenChangeTab() {
+      this.showDetail = false;
+      this.showChatWindow = false;
+      this.messages = [];
+      this.targetConversation = null;
+    },
+    openDetailInfo() {
+      this.showDetail = true;
+    },
+    closeDetailInfo() {
+      this.showDetail = false;
+    },
+    async toggleOne2OneTab() {
+      this.activeTab = MESSAGE_OPTIONS.One2One.value;
+      this.resetStoreWhenChangeTab();
+      await this.getConversations();
+    },
+    async toggleGroupTab() {
+      this.activeTab = MESSAGE_OPTIONS.Group.value;
+      this.resetStoreWhenChangeTab();
+      await this.getConversations();
     },
   },
 });

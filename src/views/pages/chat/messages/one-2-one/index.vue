@@ -4,13 +4,9 @@
     <div class="chat-content parent-height">
       <div
         class="msgs overflow-y-auto msg-height pt-6 space-y-6"
-        ref="chatheight"
+        ref="chatWindow"
       >
-        <div
-          class="block md:px-6 px-4"
-          v-for="(item, i) in conversation"
-          :key="i"
-        >
+        <div class="block md:px-6 px-4" v-for="(item, i) in messages" :key="i">
           <div
             class="flex space-x-2 items-start group rtl:space-x-reverse"
             v-if="isThemSender(item)"
@@ -29,7 +25,13 @@
                 <div
                   class="text-contrent p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal mb-1 rounded-md flex-1 whitespace-pre-wrap break-all"
                 >
-                  {{ item.content }}
+                  <p v-if="item.content">{{ item.content }}</p>
+                  <img
+                    class="object-contain h-64 w-full"
+                    v-if="item?.imageUrl"
+                    :src="item?.imageUrl"
+                    alt="imageurl"
+                  />
                 </div>
                 <span
                   class="font-normal text-xs text-slate-400 dark:text-slate-400"
@@ -41,18 +43,24 @@
           <!-- sender -->
           <div
             class="flex space-x-2 items-start justify-end group w-full rtl:space-x-reverse"
-            v-if="!isThemSender(item)"
+            v-else
           >
             <div class="no flex space-x-4 rtl:space-x-reverse">
               <div class="whitespace-pre-wrap break-all">
                 <div
-                  class="text-contrent p-3 bg-slate-300 dark:bg-slate-900 dark:text-slate-300 text-slate-800 text-sm font-normal rounded-md flex-1 mb-1"
+                  class="text-content p-3 bg-slate-300 dark:bg-slate-900 dark:text-slate-300 text-slate-800 text-sm font-normal rounded-md flex-1 mb-1"
                 >
-                  {{ item.content }}
+                  <p v-if="item.content">{{ item.content }}</p>
+                  <img
+                    v-if="item?.imageUrl"
+                    :src="item?.imageUrl"
+                    class="object-contain h-64 w-full"
+                    alt="imageurl"
+                  />
                 </div>
-                <span class="font-normal text-xs text-slate-400">{{
-                  formatDateTimeChat(item.createdDatetime)
-                }}</span>
+                <p class="font-normal text-right text-xs text-slate-400">
+                  {{ formatDateTimeChat(item.createdDatetime) }}
+                </p>
               </div>
             </div>
             <div class="flex-none">
@@ -69,16 +77,16 @@
         </div>
       </div>
     </div>
-    <Footer />
+    <Footer @send-message="onSendMessage" />
   </div>
 </template>
 <script>
 import { useAuthStore } from "@/store/auth";
 import { getAvatarSrc, formatDateTimeChat } from "@/helpers";
-import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 import Header from "./-header.vue";
 import Footer from "./-footer.vue";
 import { mapState } from "pinia";
+import { useChatStore } from "@/store/chat";
 export default {
   components: {
     Header,
@@ -87,17 +95,34 @@ export default {
   data() {
     return {
       authStore: useAuthStore(),
+      chatStore: useChatStore(),
     };
+  },
+  mounted() {
+    this.scrollToBottom();
+  },
+  computed: {
+    ...mapState(useChatStore, ["messages"]),
+  },
+  watch: {
+    messages() {
+      this.scrollToBottom();
+    },
   },
   methods: {
     getAvatarSrc,
     isThemSender(message) {
       return message.fromUserId !== this.authStore.currentUser?.id;
     },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        this.$refs.chatWindow.scrollTop = this.$refs.chatWindow.scrollHeight;
+      });
+    },
     formatDateTimeChat,
-  },
-  computed: {
-    ...mapState(useChatOne2OneStore, ["conversation"]),
+    async onSendMessage(payload) {
+      await this.chatStore.sendMessage(payload);
+    },
   },
 };
 </script>

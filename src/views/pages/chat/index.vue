@@ -13,7 +13,7 @@
             <button
               class="w-1/2 bg-white text-gray-500 py-4 px-6 border-b-2 font-medium border-transparent hover:border-blue-500 focus:outline-none active:text-blue-500 active:border-blue-500"
               :class="{
-                'border-blue-500': activeTab === MESSAGE_OPTIONS.One2One.value,
+                'border-blue-500': isOne2OneTab,
               }"
               @click="toggleOne2OneTab"
             >
@@ -22,17 +22,17 @@
             <button
               class="w-1/2 bg-white text-gray-500 py-4 px-6 border-b-2 font-medium border-transparent hover:border-blue-500 focus:outline-none active:text-blue-500 active:border-blue-500"
               :class="{
-                'border-blue-500': activeTab === MESSAGE_OPTIONS.Group.value,
+                'border-blue-500': isGroupTab,
               }"
               @click="toggleGroupTab"
             >
               Group
             </button>
           </div>
-          <div v-show="activeTab === MESSAGE_OPTIONS.One2One.value">
+          <div v-if="isOne2OneTab">
             <One2OneSideBar />
           </div>
-          <div v-show="activeTab === MESSAGE_OPTIONS.Group.value">
+          <div v-else>
             <GroupSideBar />
           </div>
         </div>
@@ -43,30 +43,24 @@
         <div class="flex-1">
           <Transition name="fade-slide" mode="out-in">
             <Card bodyClass="p-0 h-full" className="h-full">
-              <template v-if="isOne2OneChat">
-                <One2OneChatBox v-if="isOne2OneActiveChat" />
+              <template v-if="isOne2OneTab">
+                <One2OneChatBox v-if="showChatWindow" />
                 <Blank v-else />
               </template>
               <template v-else>
-                <GroupChatBox v-if="isGroupChatActiveChat" />
+                <GroupChatBox v-if="showChatWindow" />
                 <Blank v-else />
               </template>
             </Card>
           </Transition>
         </div>
         <Transition name="slide" mode="out-in">
-          <div
-            class="flex-none w-[285px]"
-            v-if="!isOne2OneChat && openInfoGroup"
-          >
+          <div class="flex-none w-[285px]" v-if="!isGroupTab && showDetail">
             <Card bodyClass="p-0 h-full">
               <InformationGroup />
             </Card>
           </div>
-          <div
-            class="flex-none w-[285px]"
-            v-else-if="isOne2OneChat && openInfoUser"
-          >
+          <div class="flex-none w-[285px]" v-else-if="isGroupTab && showDetail">
             <Card bodyClass="p-0 h-full">
               <InformationOne2One />
             </Card>
@@ -87,19 +81,11 @@ import Myprofile from "./Myprofile.vue";
 import window from "@/mixins/window";
 import { mapState } from "pinia";
 import { useAuthStore } from "@/store/auth";
-import { useChatOne2OneStore } from "@/store/chat-one-two-one";
-import { useChatGroupStore } from "@/store/chat-group";
 import { useRouter } from "vue-router";
 import InformationGroup from "./information/group/index.vue";
 import InformationOne2One from "./information/one-2-one/index.vue";
-const MESSAGE_OPTIONS = {
-  One2One: {
-    value: 1,
-  },
-  Group: {
-    value: 2,
-  },
-};
+import { MESSAGE_OPTIONS } from "@/constant/chat";
+import { useChatStore } from "@/store/chat";
 export default {
   mixins: [window],
   components: {
@@ -115,51 +101,33 @@ export default {
   },
   data() {
     return {
-      MESSAGE_OPTIONS,
       activeTab: MESSAGE_OPTIONS.One2One.value,
-      one2OneStore: useChatOne2OneStore(),
-      groupChatStore: useChatGroupStore(),
+      chatStore: useChatStore(),
       router: useRouter(),
     };
-  },
-  // beforeRouteLeave activechat make false
-  beforeRouteLeave(to, from, next) {
-    this.activechat = false;
-    next();
   },
   async created() {
     if (!this.currentUser) {
       await this.router.push("/login");
     } else {
-      if (this.isOne2OneChat) {
-        await this.one2OneStore.getContactsByUser();
-      } else {
-        await this.groupChatStore.getGroups();
-      }
+      await this.chatStore.getConversations();
     }
   },
   computed: {
     ...mapState(useAuthStore, ["currentUser"]),
-    ...mapState(useChatOne2OneStore, ["openInfoUser"]),
-    ...mapState(useChatGroupStore, ["openInfoGroup"]),
-    isOne2OneChat() {
-      return this.activeTab === MESSAGE_OPTIONS.One2One.value;
-    },
-    isOne2OneActiveChat() {
-      return this.one2OneStore.isActiveChat;
-    },
-    isGroupChatActiveChat() {
-      return this.groupChatStore.isActiveChat;
-    },
+    ...mapState(useChatStore, [
+      "isGroupTab",
+      "isOne2OneTab",
+      "showChatWindow",
+      "showDetail",
+    ]),
   },
   methods: {
     async toggleOne2OneTab() {
-      this.activeTab = MESSAGE_OPTIONS.One2One.value;
-      await this.one2OneStore.getContactsByUser();
+      await this.chatStore.toggleOne2OneTab();
     },
     async toggleGroupTab() {
-      this.activeTab = MESSAGE_OPTIONS.Group.value;
-      await this.groupChatStore.getGroups();
+      await this.chatStore.toggleGroupTab();
     },
   },
 };

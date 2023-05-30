@@ -63,20 +63,20 @@
 </template>
 <script>
 import { Icon } from "@iconify/vue";
-import { useChatOne2OneStore } from "@/store/chat-one-two-one";
 export default {
   components: { Icon },
   data() {
     return {
       newMessage: "",
       imageUrls: [],
-      one2OneStore: useChatOne2OneStore(),
     };
   },
   methods: {
     async sendMessage() {
-      // send message with this.newMessage and this.imageUrls to backend
-      await this.one2OneStore.sendMessageOne2One({ content: this.newMessage });
+      this.$emit("send-message", {
+        content: this.newMessage,
+        imageUrls: this.imageUrls,
+      });
       this.newMessage = "";
       this.imageUrls = [];
     },

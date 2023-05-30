@@ -62,21 +62,26 @@
   </footer>
 </template>
 <script>
-import { useChatGroupStore } from "@/store/chat-group";
 import { Icon } from "@iconify/vue";
+import { useChatStore } from "@/store/chat";
 export default {
   components: { Icon },
   data() {
     return {
       newMessage: "",
       imageUrls: [],
-      chatGroupStore: useChatGroupStore(),
+      chatGroupStore: useChatStore(),
     };
   },
   methods: {
     async sendMessage() {
       // send message with this.newMessage and this.imageUrls to backend
-      await this.chatGroupStore.sendMessage2Group({ content: this.newMessage });
+
+      this.$emit("send-message", {
+        content: this.newMessage,
+        imageUrls: this.imageUrls,
+      });
+
       this.newMessage = "";
       this.imageUrls = [];
     },

@@ -6,7 +6,7 @@
           <div class="flex-none relative">
             <div class="h-10 w-10 rounded-full relative">
               <img
-                :src="getAvatarSrc(conversation?.avatarUrl)"
+                :src="getAvatarSrc(targetConversation?.avatarUrl)"
                 alt=""
                 class="w-full h-full object-cover rounded-full"
               />
@@ -31,7 +31,7 @@
               class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px] truncate min-w-[50px] p-1 rounded w-24"
               contenteditable="true"
               @blur="updateName"
-              >{{ conversation?.name }}</span
+              >{{ targetConversation?.name }}</span
             >
           </div>
         </div>
@@ -46,7 +46,7 @@
           <Icon icon="heroicons-outline:video-camera" />
         </div>
 
-        <div @click="chatGroupStore.openTabInfoGroup" class="msg-action-btn">
+        <div @click="chatStore.openDetailInfo" class="msg-action-btn">
           <Icon icon="heroicons-outline:dots-horizontal" />
         </div>
       </div>
@@ -66,9 +66,9 @@
 import { getAvatarSrc } from "@/helpers";
 import Icon from "@/components/Icon";
 import { mapState } from "pinia";
-import { useChatGroupStore } from "@/store/chat-group";
 import PhoneCall from "./-phone-call.vue";
 import VideoCall from "./-video-call.vue";
+import { useChatStore } from "@/store/chat";
 export default {
   components: {
     Icon,
@@ -79,24 +79,20 @@ export default {
     return {
       showVideoCallPopup: false,
       showCallPopup: false,
-      chatGroupStore: useChatGroupStore(),
+      chatStore: useChatStore(),
     };
   },
   computed: {
-    ...mapState(useChatGroupStore, ["conversation"]),
+    ...mapState(useChatStore, ["targetConversation"]),
   },
   methods: {
     getAvatarSrc,
     updateName(name) {},
     uploadAvatar() {
       const files = this.$refs.avatarInput.files;
-      // You can use FormData to send the image to the backend
       const formData = new FormData();
       formData.append("avatar", files[0]);
-      // Call your backend API to update the user's avatar with the new image
-      // ...
     },
-    openinfo() {},
     openCallPopup() {
       this.showCallPopup = true;
       this.showVideoCallPopup = false;

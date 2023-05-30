@@ -24,7 +24,7 @@
   <div class="contact-height overflow-y-auto">
     <div class="divide-y divide-slate-100 dark:divide-slate-700">
       <div
-        v-for="(item, i) in groups"
+        v-for="(item, i) in conversations"
         :key="i"
         @click="openChat(item)"
         class="py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
@@ -59,15 +59,14 @@
       </div>
     </div>
   </div>
-  <AddGroup :open-modal="isAddGroupOpen" @close-modal="closeAddGroup" />
+  <!--  <AddGroup :open-modal="isAddGroupOpen" @close-modal="closeAddGroup" />-->
 </template>
 <script>
 import AddGroup from "./-add-group.vue";
 import Icon from "@/components/Icon";
 import { getAvatarSrc } from "@/helpers";
 import { mapState } from "pinia";
-import { useChatGroupStore } from "@/store/chat-group";
-import { useChatOne2OneStore } from "@/store/chat-one-two-one";
+import { useChatStore } from "@/store/chat";
 export default {
   components: {
     AddGroup,
@@ -77,27 +76,23 @@ export default {
     return {
       isAddGroupOpen: false,
       searchGroup: "",
-      chatOne2One: useChatOne2OneStore(),
-      chatGroup: useChatGroupStore(),
+      chatStore: useChatStore(),
     };
   },
-  async created() {
-    await this.chatGroup.getGroups();
-  },
   computed: {
-    ...mapState(useChatGroupStore, ["groups"]),
+    ...mapState(useChatStore, ["conversations"]),
   },
   methods: {
     getAvatarSrc,
     async openAddGroup() {
       this.isAddGroupOpen = true;
-      await this.chatOne2One.getContactsByUser();
+      // await this.chatOne2One.getListUserOnline();
     },
     closeAddGroup() {
       this.isAddGroupOpen = false;
     },
-    async openChat(group) {
-      await this.chatGroup.openChat(group);
+    async openChat(conversation) {
+      await this.chatStore.openChat(conversation);
     },
   },
 };

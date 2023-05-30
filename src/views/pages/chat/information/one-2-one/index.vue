@@ -2,7 +2,7 @@
   <div class="h-full p-6" data-simplebar>
     <div class="flex items-center mb-4">
       <button
-        @click="chatOne2OneStore.closeInfoUser"
+        @click="chatStore.closeDetailInfo"
         class="mr-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition duration-300"
       >
         <Icon icon="heroicons-outline:x" />
@@ -11,18 +11,15 @@
     </div>
     <div class="h-[100px] w-[100px] rounded-full mx-auto mb-4">
       <img
-        :src="getAvatarSrc(targetUser?.avatarUrl)"
+        :src="getAvatarSrc(targetConversation?.avatarUrl)"
         alt=""
         class="block w-full h-full object-cover rounded-full"
       />
     </div>
     <div class="text-center">
       <h5 class="text-base text-slate-600 dark:text-slate-300 font-medium mb-1">
-        {{ targetUser?.name }}
+        {{ targetConversation?.name }}
       </h5>
-      <h6 class="text-xs text-slate-600 dark:text-slate-300 font-normal">
-        {{ targetUser?.role }}
-      </h6>
     </div>
     <h4 class="py-4 text-sm text-secondary-500 dark:text-slate-300 font-normal">
       Shared documents
@@ -76,7 +73,7 @@
 <script>
 import { getAvatarSrc } from "@/helpers";
 import { mapState } from "pinia";
-import { useChatOne2OneStore } from "@/store/chat-one-two-one";
+import { useChatStore } from "@/store/chat";
 import Icon from "@/components/Icon";
 export default {
   components: {
@@ -84,14 +81,14 @@ export default {
   },
   data() {
     return {
-      chatOne2OneStore: useChatOne2OneStore(),
+      chatStore: useChatStore(),
     };
   },
   methods: {
     getAvatarSrc,
   },
   computed: {
-    ...mapState(useChatOne2OneStore, ["targetUser"]),
+    ...mapState(useChatStore, ["targetConversation"]),
   },
 };
 </script>
