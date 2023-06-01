@@ -10,6 +10,7 @@ export const useChatStore = defineStore("chat", {
     messages: [],
     conversations: [],
     targetConversation: null,
+    users: [],
   }),
   getters: {
     isOne2OneTab(state) {
@@ -91,6 +92,20 @@ export const useChatStore = defineStore("chat", {
     async toggleGroupTab() {
       this.activeTab = MESSAGE_OPTIONS.Group.value;
       this.resetStoreWhenChangeTab();
+      await this.getConversations();
+    },
+    async getListUsersInDb() {
+      const {
+        data: { metadata },
+      } = await apis.chatApi.get("/users");
+      this.users = metadata.users;
+    },
+    async createConversationGroup(payload) {
+      await apis.chatApi.post("/conversations/group", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       await this.getConversations();
     },
   },

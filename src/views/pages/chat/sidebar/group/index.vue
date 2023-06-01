@@ -59,7 +59,11 @@
       </div>
     </div>
   </div>
-  <!--  <AddGroup :open-modal="isAddGroupOpen" @close-modal="closeAddGroup" />-->
+  <AddGroup
+    :open-modal="isAddGroupOpen"
+    @create-conversation-group="onCreateConversationGroup"
+    @close-modal="closeAddGroup"
+  />
 </template>
 <script>
 import AddGroup from "./-add-group.vue";
@@ -86,13 +90,16 @@ export default {
     getAvatarSrc,
     async openAddGroup() {
       this.isAddGroupOpen = true;
-      // await this.chatOne2One.getListUserOnline();
+      await this.chatStore.getListUsersInDb();
     },
     closeAddGroup() {
       this.isAddGroupOpen = false;
     },
     async openChat(conversation) {
       await this.chatStore.openChat(conversation);
+    },
+    async onCreateConversationGroup(payload) {
+      await this.chatStore.createConversationGroup(payload);
     },
   },
 };
