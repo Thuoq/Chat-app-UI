@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { MESSAGE_OPTIONS, CHAT_ACTION_URL } from "@/constant/chat";
 import { apis } from "@/apis";
+import { useAuthStore } from "@/store/auth";
 
 export const useChatStore = defineStore("chat", {
   state: () => ({
@@ -38,14 +39,9 @@ export const useChatStore = defineStore("chat", {
       if (this.isOne2OneTab && metadata?.conversations.length) {
         conversations = conversations.map((conversaion) => {
           const message = conversaion.messages[0];
-          const nameReceivedUser = message?.receivedBy?.name || "";
-          const avatarUrl = message?.receivedBy?.avatarUrl || null;
-          const targetUserId = message?.receivedBy.id;
           return {
             ...conversaion,
-            name: nameReceivedUser,
-            avatarUrl,
-            targetUserId,
+            ...this.getChattingWithUser(message),
           };
         });
       }
@@ -133,6 +129,24 @@ export const useChatStore = defineStore("chat", {
         const conversationId = this.messages[0]?.conversation?.id || null;
         this.targetConversation.conversationId = conversationId;
       }
+    },
+    getChattingWithUser(message = {}) {
+      const receivedByUser = message.receivedBy;
+      const sendByUser = message.sentBy;
+      const authStore = useAuthStore();
+      const currentUserId = authStore.currentUser?.id;
+      if (receivedByUser?.id !== currentUserId) {
+        return {
+          name: receivedByUser?.name || null,
+          targetUserId: receivedByUser?.id || null,
+          avatarUrl: receivedByUser?.avatarUrl || null,
+        };
+      }
+      return {
+        name: sendByUser.name || null,
+        targetUserId: sendByUser?.id || null,
+        avatarUrl: sendByUser?.avatarUrl || null,
+      };
     },
   },
 });

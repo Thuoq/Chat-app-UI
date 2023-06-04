@@ -1,8 +1,6 @@
 import { defineStore } from "pinia";
 import { apis } from "@/apis";
 import { useToast } from "vue-toastification";
-import Cookies from "js-cookie";
-import { REQUEST_HEADER } from "@/constant/request-headers";
 
 const toast = useToast();
 export const useAuthStore = defineStore("auth", {
@@ -58,8 +56,6 @@ export const useAuthStore = defineStore("auth", {
           data: { message },
         } = await apis.chatApi.post("/auth/logout");
         this.currentUser = null;
-        Cookies.remove(REQUEST_HEADER.REFRESH_TOKEN);
-        Cookies.remove(REQUEST_HEADER.AUTHORIZATION);
         if (message) {
           toast.success(message);
         }
@@ -79,6 +75,16 @@ export const useAuthStore = defineStore("auth", {
           "Content-Type": "multipart/form-data",
         },
       });
+      this.currentUser = metadata?.user || null;
+      if (message) {
+        toast.success(message);
+      }
+    },
+    async updateInfoUser(payload) {
+      const {
+        data: { metadata, message },
+      } = await apis.chatApi.patch("/users", payload);
+
       this.currentUser = metadata?.user || null;
       if (message) {
         toast.success(message);

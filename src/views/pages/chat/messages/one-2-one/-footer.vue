@@ -61,6 +61,7 @@
     </div>
   </footer>
 </template>
+
 <script>
 import { Icon } from "@iconify/vue";
 export default {
@@ -72,7 +73,7 @@ export default {
     };
   },
   methods: {
-    async sendMessage() {
+    sendMessage() {
       this.$emit("send-message", {
         content: this.newMessage,
         imageUrls: this.imageUrls,
@@ -99,6 +100,7 @@ export default {
 
         reader.readAsDataURL(file);
       });
+      this.$refs.inputFile.value = "";
     },
     deleteImage(index) {
       this.imageUrls.splice(index, 1);

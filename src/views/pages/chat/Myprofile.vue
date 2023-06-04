@@ -102,7 +102,7 @@
               </div>
             </div>
             <span class="block text-slate-600 dark:text-slate-300 text-sm">{{
-              currentUser.name
+              currentUser?.name
             }}</span>
           </header>
           <hr class="border-gray-400 my-2" />
@@ -115,12 +115,7 @@
               type="text"
               placeholder="Type your display name"
               name="userName"
-            />
-            <Textinput
-              label="Type location"
-              type="text"
-              placeholder="Type your location "
-              name="location"
+              v-model="userInformation.name"
             />
             <div class="mb-8">
               <span class="form-label">Status</span>
@@ -130,13 +125,17 @@
                 :label="item.label"
                 :activeClass="item.activeClass"
                 class="mb-5"
-                v-model="status"
+                v-model="userInformation.statusCode"
                 :value="item.value"
               />
             </div>
 
             <div class="text-center">
-              <Button text="Submit" btnClass="btn-dark w-full"></Button>
+              <Button
+                :is-disabled="isUpdateDisabled"
+                text="Update Info"
+                btnClass="btn-dark w-full"
+              ></Button>
             </div>
           </form>
 
@@ -171,17 +170,39 @@ export default {
     Tooltip,
   },
   data() {
+    const authStore = useAuthStore();
     return {
-      authStore: useAuthStore(),
+      authStore,
       allStatus: USER_STATUS,
-      status: "online",
       layoutChat: useLayOutChat(),
       router: useRouter(),
+      userInformation: {
+        name: authStore.currentUser?.name,
+        statusCode: authStore.currentUser.statusCode,
+      },
     };
   },
   computed: {
     currentUser() {
       return this.authStore.currentUser;
+    },
+    isUpdateDisabled() {
+      // check with original
+      if (
+        this.currentUser.name === this.userInformation.name &&
+        this.currentUser.status === this.userInformation.statusCode
+      ) {
+        return true;
+      }
+      // check ms have name
+      if (
+        this.userInformation.name !== this.currentUser.name &&
+        this.userInformation.name
+      ) {
+        return false;
+      }
+      // check status code
+      return this.userInformation.statusCode === this.currentUser.statusCode;
     },
   },
   methods: {
@@ -196,7 +217,10 @@ export default {
       const file = event.target.files[0];
       await this.authStore.updateAvatar(file);
     },
-    onSubmit() {},
+    async onSubmit() {
+      await this.authStore.updateInfoUser(this.userInformation);
+      this.layoutChat.toggleUserProfile();
+    },
   },
 };
 </script>
