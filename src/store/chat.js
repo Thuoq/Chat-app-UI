@@ -53,7 +53,7 @@ export const useChatStore = defineStore("chat", {
     },
     async sendMessage({ content, imageUrls = [] }) {
       const url = this.generateUrl("sendMessage", {
-        conversationId: this.targetConversation.id,
+        conversationId: this.targetConversation.conversationId,
       });
       await apis.chatApi.post(url, {
         content,
@@ -64,18 +64,22 @@ export const useChatStore = defineStore("chat", {
     async openChat(conversation) {
       this.showChatWindow = true;
       const url = this.generateUrl("getMessages", {
-        conversationId: conversation.id,
+        conversationId: conversation.conversationId,
       });
       const {
         data: { metadata },
       } = await apis.chatApi.get(url);
       this.messages = metadata?.messages || [];
-      this.targetConversation = conversation;
+      this.targetConversation = {
+        ...conversation,
+        conversationId: conversation.id,
+      };
     },
     resetStoreWhenChangeTab() {
       this.showDetail = false;
       this.showChatWindow = false;
       this.messages = [];
+      this.users = [];
       this.targetConversation = null;
     },
     openDetailInfo() {
@@ -94,11 +98,15 @@ export const useChatStore = defineStore("chat", {
       this.resetStoreWhenChangeTab();
       await this.getConversations();
     },
-    async getListUsersInDb() {
+    async getListUsersInDb(obj = {}) {
+      const searchParams = new URLSearchParams();
+      if (obj.name !== undefined && obj.name !== null) {
+        searchParams.append("name", obj.name);
+      }
       const {
         data: { metadata },
-      } = await apis.chatApi.get("/users");
-      this.users = metadata.users;
+      } = await apis.chatApi.get(`/users?${searchParams.toString()}`);
+      this.users = metadata.users || [];
     },
     async createConversationGroup(payload) {
       await apis.chatApi.post("/conversations/group", payload, {
@@ -107,6 +115,24 @@ export const useChatStore = defineStore("chat", {
         },
       });
       await this.getConversations();
+    },
+    async openChatWithUserSearch(user) {
+      this.targetConversation = user;
+      this.showChatWindow = true;
+      const {
+        data: { metadata },
+      } = await apis.chatApi.get(`/users/${user.id}/messages`);
+      this.messages = metadata.messages || [];
+      let conversationId = null;
+      this.targetConversation = {
+        ...user,
+        conversationId,
+        targetUserId: user.id,
+      };
+      if (this.messages?.length) {
+        const conversationId = this.messages[0]?.conversation?.id || null;
+        this.targetConversation.conversationId = conversationId;
+      }
     },
   },
 });

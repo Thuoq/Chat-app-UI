@@ -96,7 +96,10 @@ export default {
       this.isAddGroupOpen = false;
     },
     async openChat(conversation) {
-      await this.chatStore.openChat(conversation);
+      await this.chatStore.openChat({
+        ...conversation,
+        conversationId: conversation.id,
+      });
     },
     async onCreateConversationGroup(payload) {
       await this.chatStore.createConversationGroup(payload);
