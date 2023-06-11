@@ -39,10 +39,13 @@
       <div
         class="flex-none flex md:space-x-3 space-x-1 items-center rtl:space-x-reverse"
       >
-        <div class="msg-action-btn" @click="openCallPopup">
+        <div class="msg-action-btn cursor-pointer">
+          <Icon icon="heroicons-outline:user-group" @click="openMembersPopup" />
+        </div>
+        <div class="msg-action-btn cursor-pointer" @click="openCallPopup">
           <Icon icon="heroicons-outline:phone" />
         </div>
-        <div class="msg-action-btn" @click="openVideoCall">
+        <div class="msg-action-btn cursor-pointer" @click="openVideoCall">
           <Icon icon="heroicons-outline:video-camera" />
         </div>
 
@@ -59,6 +62,10 @@
       :show-modal="showVideoCallPopup"
       @close-video-call="showVideoCallPopup = false"
     />
+    <Members
+      @close-members-popup="showMembersPopup = false"
+      :show-modal="showMembersPopup"
+    />
   </header>
 </template>
 
@@ -68,18 +75,21 @@ import Icon from "@/components/Icon";
 import { mapState } from "pinia";
 import PhoneCall from "./-phone-call.vue";
 import VideoCall from "./-video-call.vue";
+import Members from "./-members.vue";
 import { useChatStore } from "@/store/chat";
 export default {
   components: {
     Icon,
     PhoneCall,
     VideoCall,
+    Members,
   },
   data() {
     return {
       showVideoCallPopup: false,
       showCallPopup: false,
       chatStore: useChatStore(),
+      showMembersPopup: false,
     };
   },
   computed: {
@@ -101,6 +111,9 @@ export default {
       this.showVideoCallPopup = true;
 
       this.showCallPopup = false;
+    },
+    openMembersPopup() {
+      this.showMembersPopup = true;
     },
   },
 };

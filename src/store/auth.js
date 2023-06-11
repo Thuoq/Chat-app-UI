@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { apis } from "@/apis";
 import { useToast } from "vue-toastification";
+import { getUserClassStatus } from "@/helpers";
 
 const toast = useToast();
 export const useAuthStore = defineStore("auth", {
@@ -9,6 +10,8 @@ export const useAuthStore = defineStore("auth", {
   }),
   getters: {
     isAuthenticated: (state) => !!state.currentUser,
+    userStatusClass: (state) =>
+      getUserClassStatus(state?.currentUser?.statusCode),
   },
   actions: {
     async handleUserSignUp({ email, password, name }) {

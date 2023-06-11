@@ -14,11 +14,7 @@
           <div class="flex-none">
             <div class="h-10 w-10 rounded-full relative">
               <span
-                :class="
-                  item.status === 'active'
-                    ? 'bg-success-500'
-                    : 'bg-secondary-500'
-                "
+                :class="getUserClassStatus(item.statusCode)"
                 class="status ring-1 ring-white inline-block h-[10px] w-[10px] rounded-full absolute -right-0 top-0"
               ></span>
               <img
@@ -47,7 +43,7 @@
 <script>
 import { useChatStore } from "@/store/chat";
 import { mapState } from "pinia";
-import { getAvatarSrc } from "@/helpers";
+import { getAvatarSrc, getUserClassStatus } from "@/helpers";
 
 export default {
   data() {
@@ -68,6 +64,7 @@ export default {
       });
     },
     getAvatarSrc,
+    getUserClassStatus,
   },
 };
 </script>

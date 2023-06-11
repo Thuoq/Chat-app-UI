@@ -140,13 +140,37 @@ export const useChatStore = defineStore("chat", {
           name: receivedByUser?.name || null,
           targetUserId: receivedByUser?.id || null,
           avatarUrl: receivedByUser?.avatarUrl || null,
+          statusCode: receivedByUser?.statusCode || null,
         };
       }
       return {
         name: sendByUser.name || null,
         targetUserId: sendByUser?.id || null,
         avatarUrl: sendByUser?.avatarUrl || null,
+        statusCode: sendByUser?.statusCode || null,
       };
+    },
+    async getAvailableMembersToAdd() {
+      const searchParams = new URLSearchParams();
+      searchParams.append(
+        "excludeUserIds",
+        String(this.targetConversation?.groupMembers.map((el) => el.userId))
+      );
+      const {
+        data: { metadata },
+      } = await apis.chatApi.get(`/users?${searchParams.toString()}`);
+      return metadata.users || [];
+    },
+    async addMembersIntoConversationGroup({ memberIds }) {
+      const {
+        data: { metadata },
+      } = await apis.chatApi.post(
+        `/conversations/${this.targetConversation.conversationId}/group-members`,
+        {
+          memberIds,
+        }
+      );
+      console.log(metadata);
     },
   },
 });

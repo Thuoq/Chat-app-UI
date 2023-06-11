@@ -18,12 +18,13 @@
                 class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px]"
                 >{{ currentUser?.name }}
                 <span
-                  class="status bg-success-500 inline-block h-[10px] w-[10px] rounded-full ml-3"
+                  class="status inline-block h-[10px] w-[10px] rounded-full ml-3"
+                  :class="userStatusClass"
                 ></span>
               </span>
               <span
                 class="block text-slate-500 dark:text-slate-300 text-xs font-normal"
-                >Available</span
+                >{{ getUserClassLabel(currentUser.statusCode) }}</span
               >
             </div>
           </div>
@@ -75,12 +76,7 @@
                 />
                 <span
                   class="status inline-block h-3 w-3 rounded-full absolute -right-1 top-3 border border-white"
-                  :class="{
-                    'bg-success-500': status === 'online',
-                    'bg-warning-500': status === 'away',
-                    'bg-danger-500': status === 'busy',
-                    'bg-secondary-500': status === 'offline',
-                  }"
+                  :class="userStatusClass"
                 ></span>
                 <div
                   class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100"
@@ -157,10 +153,11 @@ import Radio from "@/components/Radio";
 import { useAuthStore } from "@/store/auth";
 import Textinput from "@/components/Textinput";
 import Tooltip from "@/components/Tooltip";
-import { getAvatarSrc } from "@/helpers";
+import { getAvatarSrc, getUserClassLabel } from "@/helpers";
 import { USER_STATUS } from "@/constant/user-status";
 import { useLayOutChat } from "@/store/layout-chat";
 import { useRouter } from "vue-router";
+import { mapState } from "pinia";
 export default {
   components: {
     Button,
@@ -183,9 +180,7 @@ export default {
     };
   },
   computed: {
-    currentUser() {
-      return this.authStore.currentUser;
-    },
+    ...mapState(useAuthStore, ["currentUser", "userStatusClass"]),
     isUpdateDisabled() {
       // check with original
       if (
@@ -207,6 +202,7 @@ export default {
   },
   methods: {
     getAvatarSrc,
+    getUserClassLabel,
     async handleLogout() {
       await this.authStore.handleLogOut();
       if (!this.currentUser) {

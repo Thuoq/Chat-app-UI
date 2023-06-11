@@ -6,11 +6,7 @@
           <div class="flex-none">
             <div class="h-10 w-10 rounded-full relative">
               <span
-                :class="
-                  targetConversation?.status === 'active'
-                    ? 'bg-success-500'
-                    : 'bg-secondary-500'
-                "
+                :class="getUserClassStatus(targetConversation?.statusCode)"
                 class="status ring-1 ring-white inline-block h-[10px] w-[10px] rounded-full absolute -right-0 top-0"
               ></span>
               <img
@@ -51,7 +47,7 @@
 </template>
 <script>
 import { mapState } from "pinia";
-import { getAvatarSrc } from "@/helpers";
+import { getAvatarSrc, getUserClassStatus } from "@/helpers";
 import Icon from "@/components/Icon";
 import { useChatStore } from "@/store/chat";
 export default {
@@ -67,6 +63,7 @@ export default {
     ...mapState(useChatStore, ["targetConversation"]),
   },
   methods: {
+    getUserClassStatus,
     getAvatarSrc,
   },
 };
