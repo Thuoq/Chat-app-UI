@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { apis } from "@/apis";
 import { useToast } from "vue-toastification";
 import { getUserClassStatus } from "@/helpers";
+import { useChatStore } from "@/store/chat";
 
 const toast = useToast();
 export const useAuthStore = defineStore("auth", {
@@ -62,6 +63,8 @@ export const useAuthStore = defineStore("auth", {
         if (message) {
           toast.success(message);
         }
+        // const chatStore = useChatStore();
+        // chatStore.resetStoreWhenChangeTab();
       } catch (error) {
         if (error?.response?.data) {
           toast.error(error?.response?.data?.message);

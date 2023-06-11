@@ -23,7 +23,7 @@
             </span>
             <span
               class="block text-slate-500 dark:text-slate-300 text-xs font-normal"
-              >Active now</span
+              >{{ getUserClassLabel(targetConversation?.statusCode) }}</span
             >
           </div>
         </div>
@@ -47,7 +47,7 @@
 </template>
 <script>
 import { mapState } from "pinia";
-import { getAvatarSrc, getUserClassStatus } from "@/helpers";
+import { getAvatarSrc, getUserClassLabel, getUserClassStatus } from "@/helpers";
 import Icon from "@/components/Icon";
 import { useChatStore } from "@/store/chat";
 export default {
@@ -65,6 +65,7 @@ export default {
   methods: {
     getUserClassStatus,
     getAvatarSrc,
+    getUserClassLabel,
   },
 };
 </script>

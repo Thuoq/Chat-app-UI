@@ -3,6 +3,8 @@ import { defineStore } from "pinia";
 export const useLayOutChat = defineStore("layout-chat", {
   state: () => ({
     openUserProfile: false,
+    showDetail: false,
+    showChatWindow: false,
   }),
 
   actions: {
@@ -11,6 +13,12 @@ export const useLayOutChat = defineStore("layout-chat", {
     },
     setOpenUserProfile(value) {
       this.openUserProfile = value;
+    },
+    setShowDetail(val) {
+      this.showDetail = val;
+    },
+    setShowChatWidow(val) {
+      this.setShowChatWidow = val;
     },
   },
 });
