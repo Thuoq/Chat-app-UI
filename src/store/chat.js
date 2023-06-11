@@ -9,6 +9,7 @@ export const useChatStore = defineStore("chat", {
     showDetail: false,
     showChatWindow: false,
     messages: [],
+    messagesImages: [],
     conversations: [],
     targetConversation: null,
     users: [],
@@ -66,6 +67,7 @@ export const useChatStore = defineStore("chat", {
         data: { metadata },
       } = await apis.chatApi.get(url);
       this.messages = metadata?.messages || [];
+      this.messagesImages = metadata.messagesImages || [];
       this.targetConversation = {
         ...conversation,
         conversationId: conversation.id,
@@ -77,6 +79,7 @@ export const useChatStore = defineStore("chat", {
       this.messages = [];
       this.users = [];
       this.targetConversation = null;
+      this.messagesImages = [];
     },
     openDetailInfo() {
       this.showDetail = true;
@@ -119,6 +122,7 @@ export const useChatStore = defineStore("chat", {
         data: { metadata },
       } = await apis.chatApi.get(`/users/${user.id}/messages`);
       this.messages = metadata.messages || [];
+      this.messagesImages = metadata.messagesImages || [];
       let conversationId = null;
       this.targetConversation = {
         ...user,
@@ -162,15 +166,12 @@ export const useChatStore = defineStore("chat", {
       return metadata.users || [];
     },
     async addMembersIntoConversationGroup({ memberIds }) {
-      const {
-        data: { metadata },
-      } = await apis.chatApi.post(
+      await apis.chatApi.post(
         `/conversations/${this.targetConversation.conversationId}/group-members`,
         {
           memberIds,
         }
       );
-      console.log(metadata);
     },
   },
 });

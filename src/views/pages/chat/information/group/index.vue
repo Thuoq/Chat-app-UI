@@ -22,26 +22,16 @@
       </h5>
     </div>
     <h4 class="py-4 text-sm text-secondary-500 dark:text-slate-300 font-normal">
-      Shared documents
+      Shared Images
     </h4>
     <ul class="grid grid-cols-3 gap-2">
-      <li class="h-[46px]">
+      <li
+        class="h-[46px]"
+        v-for="(messageImage, index) in messagesImages"
+        :key="index"
+      >
         <img
-          src="@/assets/images/chat/sd4.png"
-          alt=""
-          class="w-full h-full object-cover rounded-[3px]"
-        />
-      </li>
-      <li class="h-[46px]">
-        <img
-          src="@/assets/images/chat/sd5.png"
-          alt=""
-          class="w-full h-full object-cover rounded-[3px]"
-        />
-      </li>
-      <li class="h-[46px]">
-        <img
-          src="@/assets/images/chat/sd6.png"
+          :src="messageImage.imageUrl"
           alt=""
           class="w-full h-full object-cover rounded-[3px]"
         />
@@ -64,7 +54,7 @@ export default {
     Icon,
   },
   computed: {
-    ...mapState(useChatStore, ["targetConversation"]),
+    ...mapState(useChatStore, ["targetConversation", "messagesImages"]),
   },
   methods: {
     getAvatarSrc,

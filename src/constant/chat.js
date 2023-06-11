@@ -46,4 +46,16 @@ export const CHAT_ACTION_URL = {
       },
     },
   },
+  getImagesMessage: {
+    [MESSAGE_OPTIONS.One2One.label]: {
+      getUrl({ conversationId }) {
+        return `/conversations/${conversationId}/messages/images?isDirectMessage=${MESSAGE_OPTIONS.One2One.value}`;
+      },
+    },
+    [MESSAGE_OPTIONS.Group.label]: {
+      getUrl({ conversationId }) {
+        return `/conversations/${conversationId}/messages/images?isDirectMessage=${MESSAGE_OPTIONS.Group.value}`;
+      },
+    },
+  },
 };

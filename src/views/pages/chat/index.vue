@@ -57,12 +57,12 @@
         <Transition name="slide" mode="out-in">
           <div class="flex-none w-[285px]" v-if="!isGroupTab && showDetail">
             <Card bodyClass="p-0 h-full">
-              <InformationGroup />
+              <InformationOne2One />
             </Card>
           </div>
           <div class="flex-none w-[285px]" v-else-if="isGroupTab && showDetail">
             <Card bodyClass="p-0 h-full">
-              <InformationOne2One />
+              <InformationGroup />
             </Card>
           </div>
         </Transition>
