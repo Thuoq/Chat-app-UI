@@ -59,12 +59,12 @@ export const useAuthStore = defineStore("auth", {
         const {
           data: { message },
         } = await apis.chatApi.post("/auth/logout");
-        this.currentUser = null;
         if (message) {
           toast.success(message);
         }
-        // const chatStore = useChatStore();
-        // chatStore.resetStoreWhenChangeTab();
+        const chatStore = useChatStore();
+        chatStore.resetStoreWhenChangeTab();
+        this.currentUser = null;
       } catch (error) {
         if (error?.response?.data) {
           toast.error(error?.response?.data?.message);
