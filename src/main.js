@@ -19,6 +19,7 @@ import router from "./router";
 import VCalendar from "v-calendar";
 import { createPinia } from "pinia";
 import "v-calendar/dist/style.css";
+import socketIO from "./plugins/socket-io";
 
 import { useThemeSettingsStore } from "@/store/themeSettings";
 import { axiosPlugin } from "@/apis";
@@ -42,6 +43,7 @@ const app = createApp(App)
   .use(VueGoodTablePlugin)
   .use(VueApexCharts)
   .use(VCalendar)
+  .use(socketIO)
   .use(axiosPlugin, {
     baseUrl: import.meta.env.VITE_APP_API_URL,
   });

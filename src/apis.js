@@ -2,7 +2,6 @@ import axios from "axios";
 import { createPinia } from "pinia";
 import { useAuthStore } from "@/store/auth";
 import { REQUEST_HEADER } from "@/constant/request-headers";
-import Cookies from "js-cookie";
 import { HTTP_STATUS } from "@/constant/http-code";
 
 const pinia = createPinia();

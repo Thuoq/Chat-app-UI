@@ -87,6 +87,7 @@ import Header from "./-header.vue";
 import Footer from "./-footer.vue";
 import { mapState } from "pinia";
 import { useChatStore } from "@/store/chat";
+import { SOCKET_EVENT } from "@/constant/socket-action";
 export default {
   components: {
     Header,
@@ -100,9 +101,16 @@ export default {
   },
   mounted() {
     this.scrollToBottom();
+    this.$socket.on(
+      SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
+      ({ roomId, newMessage }) => {
+        console.log(":::new message", newMessage);
+        this.chatStore.pushNewMessageFromSocket(newMessage);
+      }
+    );
   },
   computed: {
-    ...mapState(useChatStore, ["messages"]),
+    ...mapState(useChatStore, ["messages", "targetConversation"]),
   },
   watch: {
     messages() {
@@ -121,7 +129,13 @@ export default {
     },
     formatDateTimeChat,
     async onSendMessage(payload) {
-      await this.chatStore.sendMessage(payload);
+      // await this.chatStore.sendMessage(payload);
+      this.$socket.emit(SOCKET_EVENT.PRIVATE_CHAT, {
+        ...payload,
+        conversationId: this.targetConversation.conversationId,
+        senderId: this.authStore.currentUser.id,
+        targetUserId: this.targetConversation.targetUserId,
+      });
     },
   },
 };

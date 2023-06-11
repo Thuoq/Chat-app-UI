@@ -44,6 +44,7 @@
 import { useChatStore } from "@/store/chat";
 import { mapState } from "pinia";
 import { getAvatarSrc, getUserClassStatus } from "@/helpers";
+import { SOCKET_EVENT } from "@/constant/socket-action";
 
 export default {
   data() {
@@ -62,6 +63,7 @@ export default {
         ...conversation,
         conversationId: conversation.id,
       });
+      this.$socket.emit(SOCKET_EVENT.SET_USER_ID, conversation.targetUserId);
     },
     getAvatarSrc,
     getUserClassStatus,

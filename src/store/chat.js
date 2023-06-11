@@ -173,5 +173,8 @@ export const useChatStore = defineStore("chat", {
         }
       );
     },
+    pushNewMessageFromSocket(msg) {
+      this.messages.push(msg);
+    },
   },
 });
