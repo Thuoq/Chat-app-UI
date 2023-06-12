@@ -106,7 +106,6 @@ export default {
     this.$socket.on(
       SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
       ({ messages, messagesImages, conversationId, conversations, sendBy }) => {
-        console.log(conversations);
         this.chatStore.onUserSendMessagePrivate({
           messages,
           messagesImages,
