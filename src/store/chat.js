@@ -13,6 +13,7 @@ export const useChatStore = defineStore("chat", {
     conversations: [],
     targetConversation: null,
     users: [],
+    notificationMessage: [],
   }),
   getters: {
     isOne2OneTab(state) {
@@ -173,8 +174,26 @@ export const useChatStore = defineStore("chat", {
         }
       );
     },
-    pushNewMessageFromSocket(msg) {
-      this.messages.push(msg);
+    onUserSendMessagePrivate({
+      conversationId,
+      messages,
+      messagesImages,
+      conversations,
+    }) {
+      // check if current waiting for the sender
+      if (this.targetConversation.conversationId === +conversationId) {
+        this.messages = messages;
+        this.messagesImages = messagesImages;
+      }
+      if (this.isOne2OneTab) {
+        this.conversations = conversations.map((conversation) => {
+          const message = conversation.messages[0];
+          return {
+            ...conversation,
+            ...this.getChattingWithUser(message),
+          };
+        });
+      }
     },
   },
 });

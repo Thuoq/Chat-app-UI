@@ -86,6 +86,7 @@ import InformationGroup from "./information/group/index.vue";
 import InformationOne2One from "./information/one-2-one/index.vue";
 import { MESSAGE_OPTIONS } from "@/constant/chat";
 import { useChatStore } from "@/store/chat";
+import { SOCKET_EVENT } from "@/constant/socket-action";
 export default {
   mixins: [window],
   components: {
@@ -111,6 +112,7 @@ export default {
       await this.router.push("/login");
     } else {
       await this.chatStore.getConversations();
+      this.$socket.emit(SOCKET_EVENT.SET_USER_ID, this.currentUser.id);
     }
   },
   computed: {

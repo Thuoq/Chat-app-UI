@@ -88,6 +88,7 @@ import Footer from "./-footer.vue";
 import { mapState } from "pinia";
 import { useChatStore } from "@/store/chat";
 import { SOCKET_EVENT } from "@/constant/socket-action";
+import { useToast } from "vue-toastification";
 export default {
   components: {
     Header,
@@ -97,15 +98,24 @@ export default {
     return {
       authStore: useAuthStore(),
       chatStore: useChatStore(),
+      toast: useToast(),
     };
   },
   mounted() {
     this.scrollToBottom();
     this.$socket.on(
       SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
-      ({ roomId, newMessage }) => {
-        console.log(":::new message", newMessage);
-        this.chatStore.pushNewMessageFromSocket(newMessage);
+      ({ messages, messagesImages, conversationId, conversations, sendBy }) => {
+        console.log(conversations);
+        this.chatStore.onUserSendMessagePrivate({
+          messages,
+          messagesImages,
+          conversationId,
+          conversations,
+        });
+        if (sendBy) {
+          this.toast.success(`You received message from ${sendBy.name}`);
+        }
       }
     );
   },
@@ -129,7 +139,6 @@ export default {
     },
     formatDateTimeChat,
     async onSendMessage(payload) {
-      // await this.chatStore.sendMessage(payload);
       this.$socket.emit(SOCKET_EVENT.PRIVATE_CHAT, {
         ...payload,
         conversationId: this.targetConversation.conversationId,

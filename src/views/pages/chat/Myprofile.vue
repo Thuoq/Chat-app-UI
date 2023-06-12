@@ -158,6 +158,7 @@ import { USER_STATUS } from "@/constant/user-status";
 import { useLayOutChat } from "@/store/layout-chat";
 import { useRouter } from "vue-router";
 import { mapState } from "pinia";
+import { SOCKET_EVENT } from "@/constant/socket-action";
 export default {
   components: {
     Button,
@@ -197,13 +198,14 @@ export default {
         return false;
       }
       // check status code
-      return this.userInformation.statusCode === this.currentUser.statusCode;
+      return this.userInformation.statusCode === this?.currentUser?.statusCode;
     },
   },
   methods: {
     getAvatarSrc,
     getUserClassLabel,
     async handleLogout() {
+      this.$socket.emit(SOCKET_EVENT.USER_LOGOUT, this.currentUser.id);
       await this.authStore.handleLogOut();
       if (!this.currentUser) {
         await this.router.push("/login");

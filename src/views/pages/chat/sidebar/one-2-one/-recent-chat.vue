@@ -63,7 +63,6 @@ export default {
         ...conversation,
         conversationId: conversation.id,
       });
-      this.$socket.emit(SOCKET_EVENT.SET_USER_ID, conversation.targetUserId);
     },
     getAvatarSrc,
     getUserClassStatus,

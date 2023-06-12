@@ -65,6 +65,7 @@ export const useAuthStore = defineStore("auth", {
         const chatStore = useChatStore();
         chatStore.resetStoreWhenChangeTab();
         this.currentUser = null;
+        window.localStorage.removeItem("auth");
       } catch (error) {
         if (error?.response?.data) {
           toast.error(error?.response?.data?.message);
