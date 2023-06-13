@@ -87,6 +87,7 @@ import InformationOne2One from "./information/one-2-one/index.vue";
 import { MESSAGE_OPTIONS } from "@/constant/chat";
 import { useChatStore } from "@/store/chat";
 import { SOCKET_EVENT } from "@/constant/socket-action";
+import { useToast } from "vue-toastification";
 export default {
   mixins: [window],
   components: {
@@ -105,6 +106,7 @@ export default {
       activeTab: MESSAGE_OPTIONS.One2One.value,
       chatStore: useChatStore(),
       router: useRouter(),
+      toast: useToast(),
     };
   },
   async created() {
@@ -113,6 +115,26 @@ export default {
     } else {
       await this.chatStore.getConversations();
       this.$socket.emit(SOCKET_EVENT.SET_USER_ID, this.currentUser.id);
+      this.$socket.on(
+        SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
+        ({
+          messages,
+          messagesImages,
+          conversationId,
+          conversations,
+          sendBy,
+        }) => {
+          this.chatStore.onUserSendMessagePrivate({
+            messages,
+            messagesImages,
+            conversationId,
+            conversations,
+          });
+          if (sendBy) {
+            this.toast.success(`You received message from ${sendBy.name}`);
+          }
+        }
+      );
     }
   },
   computed: {

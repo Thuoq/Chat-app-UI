@@ -181,7 +181,7 @@ export const useChatStore = defineStore("chat", {
       conversations,
     }) {
       // check if current waiting for the sender
-      if (this.targetConversation.conversationId === +conversationId) {
+      if (this.targetConversation?.conversationId === +conversationId) {
         this.messages = messages;
         this.messagesImages = messagesImages;
       }

@@ -103,20 +103,6 @@ export default {
   },
   mounted() {
     this.scrollToBottom();
-    this.$socket.on(
-      SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
-      ({ messages, messagesImages, conversationId, conversations, sendBy }) => {
-        this.chatStore.onUserSendMessagePrivate({
-          messages,
-          messagesImages,
-          conversationId,
-          conversations,
-        });
-        if (sendBy) {
-          this.toast.success(`You received message from ${sendBy.name}`);
-        }
-      }
-    );
   },
   computed: {
     ...mapState(useChatStore, ["messages", "targetConversation"]),
