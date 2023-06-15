@@ -1,24 +1,24 @@
 <template>
-  <div v-if="conversations.length">
+  <div v-if="recentChats.length">
     <h3 class="text-lg font-semibold text-slate-900 mb-3">Recent chats</h3>
     <div
       class="divide-y divide-slate-100 dark:divide-slate-700 overflow-auto max-h-[400px]"
     >
       <div
-        v-for="(item, i) in conversations"
+        v-for="(user, i) in recentChats"
         :key="i"
         class="py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
-        @click="openChat(item)"
+        @click="onSelectedUser(user)"
       >
         <div class="flex space-x-3 px-6 rtl:space-x-reverse">
           <div class="flex-none">
             <div class="h-10 w-10 rounded-full relative">
               <span
-                :class="getUserClassStatus(item.statusCode)"
+                :class="getUserClassStatus(user.statusCode)"
                 class="status ring-1 ring-white inline-block h-[10px] w-[10px] rounded-full absolute -right-0 top-0"
               ></span>
               <img
-                :src="getAvatarSrc(item.avatarUrl)"
+                :src="getAvatarSrc(user.avatarUrl)"
                 alt=""
                 class="block w-full h-full object-cover rounded-full"
               />
@@ -28,7 +28,7 @@
             <div class="flex-1">
               <span
                 class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px]"
-                >{{ item.name }}</span
+                >{{ user.name }}</span
               >
             </div>
           </div>
@@ -41,28 +41,24 @@
   </div>
 </template>
 <script>
-import { useChatStore } from "@/store/chat";
 import { mapState } from "pinia";
 import { getAvatarSrc, getUserClassStatus } from "@/helpers";
-import { SOCKET_EVENT } from "@/constant/socket-action";
+import { usePrivateChat } from "@/store/private-chat";
 
 export default {
   data() {
     return {
-      chatStore: useChatStore(),
+      privateChat: usePrivateChat(),
       searchContact: "",
       matchingContacts: [],
     };
   },
   computed: {
-    ...mapState(useChatStore, ["conversations"]),
+    ...mapState(usePrivateChat, ["recentChats"]),
   },
   methods: {
-    async openChat(conversation) {
-      await this.chatStore.openChat({
-        ...conversation,
-        conversationId: conversation.id,
-      });
+    async onSelectedUser(user) {
+      await this.privateChat.onSelectedUser(user);
     },
     getAvatarSrc,
     getUserClassStatus,

@@ -85,9 +85,11 @@ import { useRouter } from "vue-router";
 import InformationGroup from "./information/group/index.vue";
 import InformationOne2One from "./information/one-2-one/index.vue";
 import { MESSAGE_OPTIONS } from "@/constant/chat";
-import { useChatStore } from "@/store/chat";
+
 import { SOCKET_EVENT } from "@/constant/socket-action";
 import { useToast } from "vue-toastification";
+import { usePrivateChat } from "@/store/private-chat";
+import { useLayOutChat } from "@/store/layout-chat";
 export default {
   mixins: [window],
   components: {
@@ -104,54 +106,50 @@ export default {
   data() {
     return {
       activeTab: MESSAGE_OPTIONS.One2One.value,
-      chatStore: useChatStore(),
       router: useRouter(),
       toast: useToast(),
+      privateChatStore: usePrivateChat(),
+      layoutChat: useLayOutChat(),
     };
   },
   async created() {
     if (!this.currentUser) {
       await this.router.push("/login");
     } else {
-      await this.chatStore.getConversations();
+      await this.privateChatStore.getRecentChats();
       this.$socket.emit(SOCKET_EVENT.SET_USER_ID, this.currentUser.id);
-      this.$socket.on(
-        SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
-        ({
+      this.$socket.on(SOCKET_EVENT.SEND_MESSAGE_PRIVATE, (payload) => {
+        console.log(":::payload", payload);
+        const { messages, messagesImages, recentChats, sendBy, targetUserId } =
+          payload;
+        this.privateChatStore.onUserSendMessagePrivate({
           messages,
           messagesImages,
-          conversationId,
-          conversations,
-          sendBy,
-        }) => {
-          this.chatStore.onUserSendMessagePrivate({
-            messages,
-            messagesImages,
-            conversationId,
-            conversations,
-          });
-          if (sendBy) {
-            this.toast.success(`You received message from ${sendBy.name}`);
-          }
+          recentChats,
+          targetUserId,
+        });
+        if (sendBy) {
+          this.toast.success(`You received message from ${sendBy.name}`);
         }
-      );
+      });
     }
   },
   computed: {
     ...mapState(useAuthStore, ["currentUser"]),
-    ...mapState(useChatStore, [
-      "isGroupTab",
-      "isOne2OneTab",
-      "showChatWindow",
-      "showDetail",
-    ]),
+    ...mapState(useLayOutChat, ["showChatWindow", "showDetail"]),
+    isGroupTab() {
+      return this.layoutChat.currentTab === MESSAGE_OPTIONS.Group.value;
+    },
+    isOne2OneTab() {
+      return this.layoutChat.currentTab === MESSAGE_OPTIONS.One2One.value;
+    },
   },
   methods: {
     async toggleOne2OneTab() {
-      await this.chatStore.toggleOne2OneTab();
+      await this.layoutChat.toggleTab(MESSAGE_OPTIONS.One2One.value);
     },
     async toggleGroupTab() {
-      await this.chatStore.toggleGroupTab();
+      await this.layoutChat.toggleTab(MESSAGE_OPTIONS.Group.value);
     },
   },
 };

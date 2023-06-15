@@ -6,11 +6,11 @@
           <div class="flex-none">
             <div class="h-10 w-10 rounded-full relative">
               <span
-                :class="getUserClassStatus(targetConversation?.statusCode)"
+                :class="getUserClassStatus(selectedUser?.statusCode)"
                 class="status ring-1 ring-white inline-block h-[10px] w-[10px] rounded-full absolute -right-0 top-0"
               ></span>
               <img
-                :src="getAvatarSrc(targetConversation?.avatarUrl)"
+                :src="getAvatarSrc(selectedUser?.avatarUrl)"
                 alt=""
                 class="w-full h-full object-cover rounded-full"
               />
@@ -19,11 +19,11 @@
           <div class="flex-1 text-start">
             <span
               class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px] truncate"
-              >{{ targetConversation?.name }}
+              >{{ selectedUser?.name }}
             </span>
             <span
               class="block text-slate-500 dark:text-slate-300 text-xs font-normal"
-              >{{ getUserClassLabel(targetConversation?.statusCode) }}</span
+              >{{ getUserClassLabel(selectedUser?.statusCode) }}</span
             >
           </div>
         </div>
@@ -38,7 +38,7 @@
           <Icon icon="heroicons-outline:video-camera" />
         </div>
 
-        <div @click="chatStore.openDetailInfo" class="msg-action-btn">
+        <div @click="layoutStore.setShowDetail(true)" class="msg-action-btn">
           <Icon icon="heroicons-outline:dots-horizontal" />
         </div>
       </div>
@@ -49,18 +49,19 @@
 import { mapState } from "pinia";
 import { getAvatarSrc, getUserClassLabel, getUserClassStatus } from "@/helpers";
 import Icon from "@/components/Icon";
-import { useChatStore } from "@/store/chat";
+import { usePrivateChat } from "@/store/private-chat";
+import { useLayOutChat } from "@/store/layout-chat";
 export default {
   components: {
     Icon,
   },
   data() {
     return {
-      chatStore: useChatStore(),
+      layoutStore: useLayOutChat(),
     };
   },
   computed: {
-    ...mapState(useChatStore, ["targetConversation"]),
+    ...mapState(usePrivateChat, ["selectedUser"]),
   },
   methods: {
     getUserClassStatus,

@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
+import { MESSAGE_OPTIONS } from "@/constant/chat";
 
 export const useLayOutChat = defineStore("layout-chat", {
   state: () => ({
     openUserProfile: false,
     showDetail: false,
     showChatWindow: false,
+    currentTab: MESSAGE_OPTIONS.One2One.value,
   }),
 
   actions: {
@@ -18,7 +20,10 @@ export const useLayOutChat = defineStore("layout-chat", {
       this.showDetail = val;
     },
     setShowChatWidow(val) {
-      this.setShowChatWidow = val;
+      this.showChatWindow = val;
+    },
+    toggleTab(value) {
+      this.currentTab = value;
     },
   },
 });

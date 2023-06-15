@@ -89,6 +89,7 @@ import { mapState } from "pinia";
 import { useChatStore } from "@/store/chat";
 import { SOCKET_EVENT } from "@/constant/socket-action";
 import { useToast } from "vue-toastification";
+import { usePrivateChat } from "@/store/private-chat";
 export default {
   components: {
     Header,
@@ -105,7 +106,7 @@ export default {
     this.scrollToBottom();
   },
   computed: {
-    ...mapState(useChatStore, ["messages", "targetConversation"]),
+    ...mapState(usePrivateChat, ["messages", "selectedUser"]),
   },
   watch: {
     messages() {
@@ -126,9 +127,8 @@ export default {
     async onSendMessage(payload) {
       this.$socket.emit(SOCKET_EVENT.PRIVATE_CHAT, {
         ...payload,
-        conversationId: this.targetConversation.conversationId,
         senderId: this.authStore.currentUser.id,
-        targetUserId: this.targetConversation.targetUserId,
+        targetUserId: this.selectedUser.id,
       });
     },
   },
