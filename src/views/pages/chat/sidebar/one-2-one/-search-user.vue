@@ -14,9 +14,9 @@
   <div
     class="divide-y divide-slate-100 dark:divide-slate-700 overflow-auto max-h-[350px]"
   >
-    <template v-if="users.length">
+    <template v-if="searchableUsers.length">
       <div
-        v-for="(item, i) in users"
+        v-for="(item, i) in searchableUsers"
         :key="i"
         class="py-5 focus:ring-0 outline-none cursor-pointer group transition-all duration-150 hover:bg-slate-100 dark:hover:bg-slate-600 dark:hover:bg-opacity-70"
         @click="openChat(item)"
@@ -54,10 +54,10 @@
   </div>
 </template>
 <script>
-import { useChatStore } from "@/store/chat";
 import { getAvatarSrc, getUserClassStatus } from "@/helpers";
 import Icon from "@/components/Icon/index.vue";
 import { mapState } from "pinia";
+import { usePrivateChat } from "@/store/private-chat";
 export default {
   components: {
     Icon,
@@ -65,22 +65,22 @@ export default {
   data() {
     return {
       searchUserName: "",
-      chatStore: useChatStore(),
+      privateChat: usePrivateChat(),
     };
   },
   watch: {
     async searchUserName(val) {
-      await this.chatStore.getListUsersInDb({
+      await this.privateChat.getUsersBySearch({
         name: val,
       });
     },
   },
   computed: {
-    ...mapState(useChatStore, ["users"]),
+    ...mapState(usePrivateChat, ["searchableUsers"]),
   },
   methods: {
     async openChat(user) {
-      await this.chatStore.openChatWithUserSearch(user);
+      await this.privateChat.onSelectedUser(user);
     },
     getAvatarSrc,
     getUserClassStatus,
