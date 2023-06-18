@@ -120,20 +120,14 @@ export default {
     } else {
       await this.privateChatStore.getRecentChats();
       this.$socket.emit(SOCKET_EVENT.SET_USER_ID, this.currentUser.id);
-      this.$socket.on(SOCKET_EVENT.SEND_MESSAGE_PRIVATE, (payload) => {
-        console.log(":::payload", payload);
-        const { messages, messagesImages, recentChats, sendBy, targetUserId } =
-          payload;
-        this.privateChatStore.onUserSendMessagePrivate({
-          messages,
-          messagesImages,
-          recentChats,
-          targetUserId,
-        });
-        if (sendBy) {
-          this.toast.success(`You received message from ${sendBy.name}`);
-        }
-      });
+      this.$socket.on(
+        SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
+        this.onSendMessagePrivateFromSocket
+      );
+      this.$socket.on(
+        SOCKET_EVENT.SEND_MESSAGE_GROUP_COMPLETED,
+        this.onReceivedMessageFromSocket
+      );
     }
   },
   computed: {
@@ -154,6 +148,25 @@ export default {
     async toggleGroupTab() {
       await this.groupChatStore.getConversationsFromUser();
       this.layoutChat.toggleTab(MESSAGE_OPTIONS.Group.value);
+    },
+    onSendMessagePrivateFromSocket(payload) {
+      const { messages, messagesImages, recentChats, sendBy, targetUserId } =
+        payload;
+      this.privateChatStore.onUserSendMessagePrivate({
+        messages,
+        messagesImages,
+        recentChats,
+        targetUserId,
+      });
+      if (sendBy) {
+        this.toast.success(`You received message from ${sendBy.name}`);
+      }
+    },
+    onReceivedMessageFromSocket(payload) {
+      this.groupChatStore.onReceivedMessageFromSocket(
+        payload,
+        this.currentUser.id
+      );
     },
   },
 };

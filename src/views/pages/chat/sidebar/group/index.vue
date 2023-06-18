@@ -50,7 +50,7 @@
 import AddGroup from "./-add-group.vue";
 import { getAvatarSrc, getUserClassStatus } from "@/helpers";
 import { mapState } from "pinia";
-import { useChatStore } from "@/store/chat";
+
 import { useGroupChatStore } from "@/store/group-chat";
 export default {
   components: {

@@ -3,7 +3,7 @@
     <Header />
     <div class="chat-content parent-height">
       <div
-        class="msgs overflow-y-autooverflow msg-height pt-6 space-y-6"
+        class="msgs overflow-y-auto msg-height pt-6 space-y-6"
         ref="chatWindow"
       >
         <div class="block md:px-6"></div>
@@ -76,24 +76,31 @@ import { useAuthStore } from "@/store/auth";
 import { mapState } from "pinia";
 import { getAvatarSrc, formatDateTimeChat } from "@/helpers";
 import { useGroupChatStore } from "@/store/group-chat";
+import { SOCKET_EVENT } from "@/constant/socket-action";
 export default {
   components: { Header, Footer },
   data() {
     return {
-      authStore: useAuthStore(),
       groupChatStore: useGroupChatStore(),
     };
   },
   computed: {
-    ...mapState(useGroupChatStore, ["messages"]),
+    ...mapState(useGroupChatStore, ["messages", "selectedConversation"]),
+    ...mapState(useAuthStore, ["currentUser"]),
   },
   methods: {
     formatDateTimeChat,
     getAvatarSrc,
     isThemSender(message) {
-      return message.fromUserId !== this.authStore.currentUser?.id;
+      return message.fromUserId !== this.currentUser?.id;
     },
-    async onSendMessage(payload) {
+    onSendMessage(payload) {
+      this.$socket.emit(SOCKET_EVENT.SEND_MESSAGE_GROUP_START, {
+        roomId: this.selectedConversation.roomId,
+        conversationId: this.selectedConversation.id,
+        currentUserId: this.currentUser.id,
+        ...payload,
+      });
       // await this.groupChatStore.sendMessage(payload);
     },
   },
