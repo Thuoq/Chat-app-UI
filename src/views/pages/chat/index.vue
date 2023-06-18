@@ -90,6 +90,7 @@ import { SOCKET_EVENT } from "@/constant/socket-action";
 import { useToast } from "vue-toastification";
 import { usePrivateChat } from "@/store/private-chat";
 import { useLayOutChat } from "@/store/layout-chat";
+import { useGroupChatStore } from "@/store/group-chat";
 export default {
   mixins: [window],
   components: {
@@ -110,6 +111,7 @@ export default {
       toast: useToast(),
       privateChatStore: usePrivateChat(),
       layoutChat: useLayOutChat(),
+      groupChatStore: useGroupChatStore(),
     };
   },
   async created() {
@@ -146,10 +148,12 @@ export default {
   },
   methods: {
     async toggleOne2OneTab() {
-      await this.layoutChat.toggleTab(MESSAGE_OPTIONS.One2One.value);
+      await this.privateChatStore.getRecentChats();
+      this.layoutChat.toggleTab(MESSAGE_OPTIONS.One2One.value);
     },
     async toggleGroupTab() {
-      await this.layoutChat.toggleTab(MESSAGE_OPTIONS.Group.value);
+      await this.groupChatStore.getConversationsFromUser();
+      this.layoutChat.toggleTab(MESSAGE_OPTIONS.Group.value);
     },
   },
 };

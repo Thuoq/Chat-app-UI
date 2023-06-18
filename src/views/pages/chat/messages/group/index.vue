@@ -75,17 +75,17 @@ import Footer from "./-footer.vue";
 import { useAuthStore } from "@/store/auth";
 import { mapState } from "pinia";
 import { getAvatarSrc, formatDateTimeChat } from "@/helpers";
-import { useChatStore } from "@/store/chat";
+import { useGroupChatStore } from "@/store/group-chat";
 export default {
   components: { Header, Footer },
   data() {
     return {
       authStore: useAuthStore(),
-      chatStore: useChatStore(),
+      groupChatStore: useGroupChatStore(),
     };
   },
   computed: {
-    ...mapState(useChatStore, ["messages"]),
+    ...mapState(useGroupChatStore, ["messages"]),
   },
   methods: {
     formatDateTimeChat,
@@ -94,7 +94,7 @@ export default {
       return message.fromUserId !== this.authStore.currentUser?.id;
     },
     async onSendMessage(payload) {
-      await this.chatStore.sendMessage(payload);
+      // await this.groupChatStore.sendMessage(payload);
     },
   },
 };

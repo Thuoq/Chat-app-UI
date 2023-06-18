@@ -6,7 +6,7 @@
           <div class="flex-none relative">
             <div class="h-10 w-10 rounded-full relative">
               <img
-                :src="getAvatarSrc(targetConversation?.avatarUrl)"
+                :src="getAvatarSrc(selectedConversation?.avatarUrl)"
                 alt=""
                 class="w-full h-full object-cover rounded-full"
               />
@@ -31,7 +31,7 @@
               class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px] truncate min-w-[50px] p-1 rounded w-24"
               contenteditable="true"
               @blur="updateName"
-              >{{ targetConversation?.name }}</span
+              >{{ selectedConversation?.name }}</span
             >
           </div>
         </div>
@@ -49,7 +49,10 @@
           <Icon icon="heroicons-outline:video-camera" />
         </div>
 
-        <div @click="chatStore.openDetailInfo" class="msg-action-btn">
+        <div
+          @click="layoutChatStore.setShowDetail(true)"
+          class="msg-action-btn"
+        >
           <Icon icon="heroicons-outline:dots-horizontal" />
         </div>
       </div>
@@ -76,7 +79,9 @@ import { mapState } from "pinia";
 import PhoneCall from "./-phone-call.vue";
 import VideoCall from "./-video-call.vue";
 import Members from "./-members.vue";
-import { useChatStore } from "@/store/chat";
+import { useGroupChatStore } from "@/store/group-chat";
+import { useLayOutChat } from "@/store/layout-chat";
+
 export default {
   components: {
     Icon,
@@ -88,12 +93,12 @@ export default {
     return {
       showVideoCallPopup: false,
       showCallPopup: false,
-      chatStore: useChatStore(),
+      layoutChatStore: useLayOutChat(),
       showMembersPopup: false,
     };
   },
   computed: {
-    ...mapState(useChatStore, ["targetConversation"]),
+    ...mapState(useGroupChatStore, ["selectedConversation"]),
   },
   methods: {
     getAvatarSrc,

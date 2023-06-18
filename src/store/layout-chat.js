@@ -24,6 +24,12 @@ export const useLayOutChat = defineStore("layout-chat", {
     },
     toggleTab(value) {
       this.currentTab = value;
+      this.resetWhenToggleTab();
+    },
+    resetWhenToggleTab() {
+      this.openUserProfile = false;
+      this.showDetail = false;
+      this.showChatWindow = false;
     },
   },
 });

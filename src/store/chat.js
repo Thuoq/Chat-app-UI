@@ -116,25 +116,6 @@ export const useChatStore = defineStore("chat", {
       });
       await this.getConversations();
     },
-    async openChatWithUserSearch(user) {
-      this.targetConversation = user;
-      this.showChatWindow = true;
-      const {
-        data: { metadata },
-      } = await apis.chatApi.get(`/users/${user.id}/messages`);
-      this.messages = metadata.messages || [];
-      this.messagesImages = metadata.messagesImages || [];
-      let conversationId = null;
-      this.targetConversation = {
-        ...user,
-        conversationId,
-        targetUserId: user.id,
-      };
-      if (this.messages?.length) {
-        const conversationId = this.messages[0]?.conversation?.id || null;
-        this.targetConversation.conversationId = conversationId;
-      }
-    },
     getChattingWithUser(message = {}) {
       const receivedByUser = message.receivedBy;
       const sendByUser = message.sentBy;

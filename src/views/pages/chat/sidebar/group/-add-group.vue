@@ -89,7 +89,7 @@ import Fileinput from "@/components/Fileinput/index.vue";
 import vSelect from "vue-select";
 import { mapState } from "pinia";
 import { getAvatarSrc } from "@/helpers";
-import { useChatStore } from "@/store/chat";
+import { useGroupChatStore } from "@/store/group-chat";
 
 export default {
   components: {
@@ -114,7 +114,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useChatStore, ["users"]),
+    ...mapState(useGroupChatStore, ["users"]),
   },
   methods: {
     getAvatarSrc,
