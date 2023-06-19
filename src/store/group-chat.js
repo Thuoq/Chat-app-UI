@@ -70,5 +70,22 @@ export const useGroupChatStore = defineStore("groupChat", {
       }
       //
     },
+    async getAvailableMembersToAdd() {
+      const searchParams = new URLSearchParams();
+      searchParams.append(
+        "excludeUserIds",
+        String(this.selectedConversation?.groupMembers.map((el) => el.userId))
+      );
+      const {
+        data: { metadata },
+      } = await apis.chatApi.get(`/users?${searchParams.toString()}`);
+      return metadata.users || [];
+    },
+    onJoinRoomSuccess(conversations) {
+      const layoutChatStore = useLayOutChat();
+      if (layoutChatStore.currentTab === MESSAGE_OPTIONS.Group.value) {
+        this.conversations = conversations;
+      }
+    },
   },
 });

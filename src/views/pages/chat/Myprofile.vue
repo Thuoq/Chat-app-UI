@@ -24,7 +24,7 @@
               </span>
               <span
                 class="block text-slate-500 dark:text-slate-300 text-xs font-normal"
-                >{{ getUserClassLabel(currentUser.statusCode) }}</span
+                >{{ getUserClassLabel(currentUser?.statusCode) }}</span
               >
             </div>
           </div>
@@ -185,20 +185,20 @@ export default {
     isUpdateDisabled() {
       // check with original
       if (
-        this.currentUser.name === this.userInformation.name &&
-        this.currentUser.status === this.userInformation.statusCode
+        this.currentUser?.name === this.userInformation?.name &&
+        this.currentUser?.status === this.userInformation?.statusCode
       ) {
         return true;
       }
       // check ms have name
       if (
-        this.userInformation.name !== this.currentUser.name &&
-        this.userInformation.name
+        this.userInformation?.name !== this.currentUser?.name &&
+        this.userInformation?.name
       ) {
         return false;
       }
       // check status code
-      return this.userInformation.statusCode === this?.currentUser?.statusCode;
+      return this.userInformation?.statusCode === this.currentUser?.statusCode;
     },
   },
   methods: {

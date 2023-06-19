@@ -67,6 +67,7 @@
     />
     <Members
       @close-members-popup="showMembersPopup = false"
+      @add-new-members="onAddNewMembers"
       :show-modal="showMembersPopup"
     />
   </header>
@@ -81,6 +82,7 @@ import VideoCall from "./-video-call.vue";
 import Members from "./-members.vue";
 import { useGroupChatStore } from "@/store/group-chat";
 import { useLayOutChat } from "@/store/layout-chat";
+import { SOCKET_EVENT } from "@/constant/socket-action";
 
 export default {
   components: {
@@ -119,6 +121,12 @@ export default {
     },
     openMembersPopup() {
       this.showMembersPopup = true;
+    },
+    onAddNewMembers(payload) {
+      this.$socket.emit(SOCKET_EVENT.ADD_MEMBERS_IN_GROUP_START, {
+        ...payload,
+        conversationId: this.selectedConversation.id,
+      });
     },
   },
 };

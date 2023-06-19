@@ -128,6 +128,11 @@ export default {
         SOCKET_EVENT.SEND_MESSAGE_GROUP_COMPLETED,
         this.onReceivedMessageFromSocket
       );
+      this.$socket.on(
+        SOCKET_EVENT.NOTIF_JUST_ADDED_INTO_GROUP,
+        this.onNotifJustAddedIntoGroup
+      );
+      this.$socket.on(SOCKET_EVENT.JOIN_ROOM_SUCCESS, this.onJoinRoomSuccess);
     }
   },
   computed: {
@@ -167,6 +172,18 @@ export default {
         payload,
         this.currentUser.id
       );
+    },
+    onNotifJustAddedIntoGroup({ conversation }) {
+      this.$socket.emit(SOCKET_EVENT.JOIN_ROOM_START, {
+        roomId: conversation.roomId,
+      });
+
+      this.toast.success(
+        `You has invite to group conversation ${conversation.name}`
+      );
+    },
+    onJoinRoomSuccess({ conversations }) {
+      this.groupChatStore.onJoinRoomSuccess(conversations);
     },
   },
 };

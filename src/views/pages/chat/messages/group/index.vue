@@ -23,15 +23,24 @@
             </div>
             <div class="flex-1 flex space-x-4 rtl:space-x-reverse">
               <div>
+                <span class="text-xs font-normal">{{
+                  item?.sentBy?.name
+                }}</span>
                 <div
                   class="text-contrent p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal mb-1 rounded-md flex-1 whitespace-pre-wrap break-all"
                 >
-                  {{ item.content }}
+                  <p v-if="item.content">{{ item.content }}</p>
+                  <img
+                    class="object-contain h-64 w-full"
+                    v-if="item?.imageUrl"
+                    :src="item?.imageUrl"
+                    alt="imageurl"
+                  />
                 </div>
                 <span
                   class="font-normal text-xs text-slate-400 dark:text-slate-400"
-                  >{{ formatDateTimeChat(item.createdDatetime) }}
-                </span>
+                  >{{ formatDateTimeChat(item.createdDatetime) }}</span
+                >
               </div>
             </div>
           </div>
@@ -41,15 +50,25 @@
             v-else
           >
             <div class="no flex space-x-4 rtl:space-x-reverse">
-              <div class="whitespace-pre-wrap break-all">
-                <div
-                  class="text-contrent p-3 bg-slate-300 dark:bg-slate-900 dark:text-slate-300 text-slate-800 text-sm font-normal rounded-md flex-1 mb-1"
-                >
-                  {{ item.content }}
-                </div>
-                <span class="font-normal text-xs text-slate-400">{{
-                  formatDateTimeChat(item.createdDatetime)
+              <div>
+                <span class="text-xs font-normal">{{
+                  item?.sentBy?.name
                 }}</span>
+                <div
+                  class="text-contrent p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal mb-1 rounded-md flex-1 whitespace-pre-wrap break-all"
+                >
+                  <p v-if="item.content">{{ item.content }}</p>
+                  <img
+                    class="object-contain h-64 w-full"
+                    v-if="item?.imageUrl"
+                    :src="item?.imageUrl"
+                    alt="imageurl"
+                  />
+                </div>
+                <span
+                  class="font-normal text-xs text-slate-400 dark:text-slate-400"
+                  >{{ formatDateTimeChat(item.createdDatetime) }}</span
+                >
               </div>
             </div>
             <div class="flex-none">
@@ -88,6 +107,11 @@ export default {
     ...mapState(useGroupChatStore, ["messages", "selectedConversation"]),
     ...mapState(useAuthStore, ["currentUser"]),
   },
+  watch: {
+    messages() {
+      this.scrollToBottom();
+    },
+  },
   methods: {
     formatDateTimeChat,
     getAvatarSrc,
@@ -102,6 +126,11 @@ export default {
         ...payload,
       });
       // await this.groupChatStore.sendMessage(payload);
+    },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        this.$refs.chatWindow.scrollTop = this.$refs.chatWindow.scrollHeight;
+      });
     },
   },
 };

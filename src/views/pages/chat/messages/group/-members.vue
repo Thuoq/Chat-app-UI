@@ -94,9 +94,9 @@ import VueSelect from "@/components/Select/VueSelect.vue";
 import Button from "@/components/Button/index.vue";
 import vSelect from "vue-select";
 import { mapState } from "pinia";
-import { useChatStore } from "@/store/chat";
+import { useGroupChatStore } from "@/store/group-chat";
 export default {
-  emits: ["close-members-popup"],
+  emits: ["close-members-popup", "add-new-members"],
   props: {
     showModal: {
       type: [Boolean],
@@ -110,10 +110,10 @@ export default {
     vSelect,
   },
   computed: {
-    ...mapState(useChatStore, ["targetConversation"]),
+    ...mapState(useGroupChatStore, ["selectedConversation"]),
     members() {
       return (
-        this.targetConversation?.groupMembers?.map((member) => member.user) ||
+        this.selectedConversation?.groupMembers?.map((member) => member.user) ||
         []
       );
     },
@@ -122,13 +122,13 @@ export default {
     return {
       newMembers: [],
       users: [],
-      chatStore: useChatStore(),
+      groupChatStore: useGroupChatStore(),
     };
   },
   watch: {
     async showModal(val) {
       if (val) {
-        this.users = await this.chatStore.getAvailableMembersToAdd();
+        this.users = await this.groupChatStore.getAvailableMembersToAdd();
       }
     },
   },
@@ -139,10 +139,11 @@ export default {
       this.newMembers = [];
     },
     getAvatarSrc,
-    async addMembers() {
-      await this.chatStore.addMembersIntoConversationGroup({
+    addMembers() {
+      this.$emit("add-new-members", {
         memberIds: this.newMembers,
       });
+
       this.closePopup();
     },
   },

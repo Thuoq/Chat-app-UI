@@ -22,6 +22,7 @@
             </div>
             <div class="flex-1 flex space-x-4 rtl:space-x-reverse">
               <div>
+                <div>Thuong</div>
                 <div
                   class="text-contrent p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal mb-1 rounded-md flex-1 whitespace-pre-wrap break-all"
                 >
@@ -139,7 +140,7 @@ export default {
   height: calc(100% - 0px);
 }
 .parent-height {
-  height: calc(100% - 200px);
+  height: calc(100% - 250px);
 }
 .msg-action-btn {
   @apply md:h-8 md:w-8 h-6 w-6 cursor-pointer bg-slate-100 dark:bg-slate-900 dark:text-slate-400 text-slate-900 flex flex-col justify-center items-center md:text-xl text-sm rounded-full;
