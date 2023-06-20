@@ -3,12 +3,14 @@ import { createPinia } from "pinia";
 import { useAuthStore } from "@/store/auth";
 import { REQUEST_HEADER } from "@/constant/request-headers";
 import { HTTP_STATUS } from "@/constant/http-code";
+import { useRouter } from "vue-router";
 
 const pinia = createPinia();
 const apis = {};
 const axiosPlugin = {
   install: (app, options) => {
     const authStore = useAuthStore();
+    const router = useRouter();
     const axiosInstance = axios.create({
       baseURL: options.baseUrl,
       withCredentials: true,
@@ -33,13 +35,18 @@ const axiosPlugin = {
           originalRequest._retry = true;
 
           // Make a request to get a refresh token
-          const response = await axios.get("auth/refresh-token", {
-            baseURL: options.baseUrl,
-            headers: {
-              [REQUEST_HEADER.CLIENT_ID]: authStore.currentUser?.id || null,
-            },
-            withCredentials: true,
-          });
+          const response = await axios
+            .get("auth/refresh-token", {
+              baseURL: options.baseUrl,
+              headers: {
+                [REQUEST_HEADER.CLIENT_ID]: authStore.currentUser?.id || null,
+              },
+              withCredentials: true,
+            })
+            .catch((err) => {
+              authStore.setCurrentUserWhenLogout();
+              this.$router.push("/login");
+            });
 
           if (response.status === HTTP_STATUS.OK.status) {
             // Retry the original request

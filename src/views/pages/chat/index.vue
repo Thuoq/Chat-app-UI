@@ -41,31 +41,28 @@
     <div class="flex-1">
       <div class="parent flex space-x-5 h-full rtl:space-x-reverse">
         <div class="flex-1">
-          <Transition name="fade-slide" mode="out-in">
-            <Card bodyClass="p-0 h-full" className="h-full">
-              <template v-if="isOne2OneTab">
-                <One2OneChatBox v-if="showChatWindow" />
-                <Blank v-else />
-              </template>
-              <template v-else>
-                <GroupChatBox v-if="showChatWindow" />
-                <Blank v-else />
-              </template>
-            </Card>
-          </Transition>
+          <Card bodyClass="p-0 h-full" className="h-full">
+            <template v-if="isOne2OneTab">
+              <One2OneChatBox v-if="showChatWindow" />
+              <Blank v-else />
+            </template>
+            <template v-else>
+              <GroupChatBox v-if="showChatWindow" />
+              <Blank v-else />
+            </template>
+          </Card>
         </div>
-        <Transition name="slide" mode="out-in">
-          <div class="flex-none w-[285px]" v-if="!isGroupTab && showDetail">
-            <Card bodyClass="p-0 h-full">
-              <InformationOne2One />
-            </Card>
-          </div>
-          <div class="flex-none w-[285px]" v-else-if="isGroupTab && showDetail">
-            <Card bodyClass="p-0 h-full">
-              <InformationGroup />
-            </Card>
-          </div>
-        </Transition>
+
+        <div class="flex-none w-[285px]" v-if="!isGroupTab && showDetail">
+          <Card bodyClass="p-0 h-full">
+            <InformationOne2One />
+          </Card>
+        </div>
+        <div class="flex-none w-[285px]" v-else-if="isGroupTab && showDetail">
+          <Card bodyClass="p-0 h-full">
+            <InformationGroup />
+          </Card>
+        </div>
       </div>
     </div>
   </div>

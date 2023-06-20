@@ -3,6 +3,7 @@ import { apis } from "@/apis";
 import { useToast } from "vue-toastification";
 import { getUserClassStatus } from "@/helpers";
 import { useChatStore } from "@/store/chat";
+import { useLayOutChat } from "@/store/layout-chat";
 
 const toast = useToast();
 export const useAuthStore = defineStore("auth", {
@@ -54,6 +55,12 @@ export const useAuthStore = defineStore("auth", {
         }
       }
     },
+    setCurrentUserWhenLogout() {
+      this.currentUser = null;
+      window.localStorage.removeItem("auth");
+      const layoutStore = useLayOutChat();
+      layoutStore.resetWhenToggleTab();
+    },
     async handleLogOut() {
       try {
         const {
@@ -62,10 +69,7 @@ export const useAuthStore = defineStore("auth", {
         if (message) {
           toast.success(message);
         }
-        const chatStore = useChatStore();
-        chatStore.resetStoreWhenChangeTab();
-        this.currentUser = null;
-        window.localStorage.removeItem("auth");
+        this.setCurrentUserWhenLogout();
       } catch (error) {
         if (error?.response?.data) {
           toast.error(error?.response?.data?.message);
