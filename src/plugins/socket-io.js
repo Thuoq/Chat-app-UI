@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
-const socket = io("http://localhost:8021", {
+
+const socket = io(import.meta.env.VITE_APP_BASE_API, {
   // Additional options can be added here
 });
 
