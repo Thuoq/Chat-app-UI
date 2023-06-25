@@ -1,5 +1,4 @@
 import auth from "@/middleware/auth";
-import guest from "@/middleware/guest";
 
 const routes = [
   {
@@ -491,15 +490,6 @@ const routes = [
         component: () => import("@/views/app/projects/project-details.vue"),
         meta: {
           hide: true,
-        },
-      },
-      {
-        path: "chat",
-        name: "chat",
-        component: () => import("@/views/app/chat"),
-        meta: {
-          hide: true,
-          appheight: true,
         },
       },
       // normal pages
