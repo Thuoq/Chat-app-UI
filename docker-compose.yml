@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  front-end:
+    container_name: chat-app-fe
+    build:
+      context: .
+      dockerfile: cicd/deployment/Dockerfile
+    ports:
+      - "3015:3015"
+    command: yarn preview
+    env_file:
+      - .env
+    restart:
+      always
+    networks:
+      - chat-app
+    tty: true
+
+networks:
+  chat-app:
+    driver: bridge

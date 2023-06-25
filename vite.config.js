@@ -17,6 +17,11 @@ export default defineConfig(({ command, mode }) => {
     ],
     server: {
       port: +env.VITE_PORT,
+      host: true,
+    },
+    preview: {
+      port: +env.VITE_PORT,
+      host: true,
     },
     resolve: {
       extensions: [

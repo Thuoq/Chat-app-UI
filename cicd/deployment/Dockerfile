@@ -4,8 +4,16 @@ ENV TZ=Asia/Ho_Chi_Minh
 
 WORKDIR /front-end
 
-COPY ./package.json .
-COPY ./yarn.lock .
+# Copy package.json and yarn.lock files
+COPY package.json yarn.lock ./
 # Install dependencies
 RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+RUN rm -rf ./src
+EXPOSE 3015
+CMD ["yarn", "preview"]
 
