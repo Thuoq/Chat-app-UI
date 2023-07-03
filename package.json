@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --host",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "deploy": "TAG=`echo deploy-$(date +%Y%m%d-%H%M%S)` && git tag $TAG && git push origin $TAG"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.1.3",

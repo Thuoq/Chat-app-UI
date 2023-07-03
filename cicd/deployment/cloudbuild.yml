@@ -1,0 +1,34 @@
+steps:
+  - id: 'prepare-secret'
+    name: 'gcr.io/cloud-builders/gcloud'
+    waitFor: ['-']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud secrets versions access latest --project=${PROJECT_ID} --secret=${_APP_NAME}-env --format='get(payload.data)' | tr '_-' '/+' | base64 -d > .env
+        
+  - id: build
+    name: 'gcr.io/kaniko-project/executor:latest'
+    args:
+      - --dockerfile=./cicd/deployment/Dockerfile
+      - --destination=gcr.io/${PROJECT_ID}/{_APP_NAME}
+      - --cache=true
+      - --cache-ttl=336h
+
+  - id: 'deploy'
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud beta run deploy ${_APP_NAME} \
+          --platform managed \
+          --region asia-northeast1 \
+          --allow-unauthenticated \
+          --image gcr.io/${PROJECT_ID}/${_APP_NAME}
+
+substitutions:
+  _APP_NAME: chat-app-ui
+options:
+  dynamicSubstitutions: true
