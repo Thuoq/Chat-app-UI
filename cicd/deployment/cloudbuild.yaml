@@ -13,8 +13,6 @@ steps:
     args:
       - --dockerfile=./cicd/deployment/Dockerfile
       - --destination=gcr.io/${PROJECT_ID}/{_APP_NAME}
-      - --cache=true
-      - --cache-ttl=336h
 
   - id: 'deploy'
     name: gcr.io/cloud-builders/gcloud
