@@ -12,7 +12,7 @@ steps:
     name: 'gcr.io/kaniko-project/executor:latest'
     args:
       - --dockerfile=./cicd/deployment/Dockerfile
-      - --destination=gcr.io/${PROJECT_ID}/{_APP_NAME}
+      - --destination=gcr.io/${PROJECT_ID}/${_APP_NAME}
 
   - id: 'deploy'
     name: gcr.io/cloud-builders/gcloud
