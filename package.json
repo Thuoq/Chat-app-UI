@@ -8,7 +8,8 @@
     "start": "vite preview --host",
     "preview": "vite preview --host",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-    "deploy": "TAG=`echo deploy-$(date +%Y%m%d-%H%M%S)` && git tag $TAG && git push origin $TAG"
+    "deploy:clean": "git fetch origin --prune 'refs/tags/*:refs/tags/*' && git push origin --delete $(git tag -l 'deploy-*') || true && git fetch origin --prune 'refs/tags/*:refs/tags/*'",
+    "deploy": "yarn deploy:clean && TAG=`echo deploy-$(date +%Y%m%d-%H%M%S)` && git tag $TAG && git push origin $TAG"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.1.3",
