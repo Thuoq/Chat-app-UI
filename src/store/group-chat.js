@@ -87,5 +87,12 @@ export const useGroupChatStore = defineStore("groupChat", {
         this.conversations = conversations;
       }
     },
+    clearStateGroupChat() {
+      this.conversations = [];
+      this.messages = [];
+      this.messagesImages = [];
+      this.selectedConversation = null;
+      this.users = [];
+    },
   },
 });

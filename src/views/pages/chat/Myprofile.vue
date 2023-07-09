@@ -176,7 +176,7 @@ export default {
       router: useRouter(),
       userInformation: {
         name: authStore.currentUser?.name,
-        statusCode: authStore.currentUser.statusCode,
+        statusCode: authStore.currentUser?.statusCode,
       },
     };
   },

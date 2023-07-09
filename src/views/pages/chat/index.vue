@@ -116,6 +116,10 @@ export default {
       await this.router.push("/login");
     } else {
       await this.privateChatStore.getRecentChats();
+    }
+  },
+  mounted() {
+    if (this.currentUser) {
       this.$socket.emit(SOCKET_EVENT.SET_USER_ID, this.currentUser.id);
       this.$socket.on(
         SOCKET_EVENT.SEND_MESSAGE_PRIVATE,
@@ -145,10 +149,16 @@ export default {
   methods: {
     async toggleOne2OneTab() {
       await this.privateChatStore.getRecentChats();
+
+      this.groupChatStore.clearStateGroupChat();
+
       this.layoutChat.toggleTab(MESSAGE_OPTIONS.One2One.value);
     },
     async toggleGroupTab() {
       await this.groupChatStore.getConversationsFromUser();
+
+      this.privateChatStore.clearStatePrivateChat();
+
       this.layoutChat.toggleTab(MESSAGE_OPTIONS.Group.value);
     },
     onSendMessagePrivateFromSocket(payload) {

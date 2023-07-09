@@ -77,7 +77,7 @@ export default {
   },
   created() {
     if (this.currentUser) {
-      this.$router.push("/chat");
+      this.$router.push("/");
     }
   },
   computed: {
@@ -89,7 +89,7 @@ export default {
       const run = await this.handleSubmit(async (values) => {
         await this.handleSignIn(values);
         if (this.currentUser) {
-          await this.$router.push("/chat");
+          await this.$router.push("/");
         }
         this.resetForm();
       });

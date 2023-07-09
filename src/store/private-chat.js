@@ -57,5 +57,12 @@ export const usePrivateChat = defineStore("privateChat", {
 
       this.recentChats = recentChats;
     },
+    clearStatePrivateChat() {
+      this.selectedUser = null;
+      this.messages = null;
+      this.messageImages = [];
+      this.searchableUsers = [];
+      this.recentChats = [];
+    },
   },
 });

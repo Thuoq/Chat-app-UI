@@ -3,11 +3,6 @@ import auth from "@/middleware/auth";
 const routes = [
   {
     path: "/",
-    name: "Login",
-    component: () => import("@/views/auth/login/index.vue"),
-  },
-  {
-    path: "/chat",
     name: "Chat Page",
     component: () => import("@/views/pages/chat/index.vue"),
   },

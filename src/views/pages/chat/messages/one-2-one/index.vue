@@ -22,7 +22,9 @@
             </div>
             <div class="flex-1 flex space-x-4 rtl:space-x-reverse">
               <div>
-                <div>Thuong</div>
+                <span class="text-xs font-normal">{{
+                  item?.receivedBy?.name
+                }}</span>
                 <div
                   class="text-contrent p-3 bg-slate-100 dark:bg-slate-600 dark:text-slate-300 text-slate-600 text-sm font-normal mb-1 rounded-md flex-1 whitespace-pre-wrap break-all"
                 >
