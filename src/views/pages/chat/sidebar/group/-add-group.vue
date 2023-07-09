@@ -73,7 +73,7 @@
             type="submit"
             text="Create Group"
             btnClass="btn-dark w-full"
-            @click="onSubmit()"
+            :is-disabled="isDisabledCreate"
           ></Button>
         </div>
       </form>
@@ -115,6 +115,9 @@ export default {
   },
   computed: {
     ...mapState(useGroupChatStore, ["users"]),
+    isDisabledCreate() {
+      return this.members.length <= 0 || !this.name || !this.avatarFile;
+    },
   },
   methods: {
     getAvatarSrc,
