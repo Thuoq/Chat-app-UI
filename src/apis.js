@@ -45,7 +45,7 @@ const axiosPlugin = {
             })
             .catch((err) => {
               authStore.setCurrentUserWhenLogout();
-              this.$router.push("/login");
+              this.router.push("/login");
             });
 
           if (response.status === HTTP_STATUS.OK.status) {
