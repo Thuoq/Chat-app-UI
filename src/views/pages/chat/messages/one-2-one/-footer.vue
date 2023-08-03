@@ -9,6 +9,7 @@
         type="file"
         ref="inputFile"
         multiple
+        accept="image/*"
         style="display: none"
         @change="handleFiles"
       />

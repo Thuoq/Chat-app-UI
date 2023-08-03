@@ -12,6 +12,7 @@
           :preview="preview"
           :placeholder="placeholder"
           :label="label"
+          v-bind="$attrs"
         />
         <div
           class="w-full h-[40px] file-control flex items-center"

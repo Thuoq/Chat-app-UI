@@ -36,7 +36,7 @@
             </div>
           </div>
           <div class="flex-1 text-start flex">
-            <div class="flex-1">
+            <div class="flex-1 flex items-center">
               <span
                 class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px]"
                 >{{ item.name }}</span

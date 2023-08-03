@@ -62,6 +62,7 @@
             Avatar Group</label
           >
           <Fileinput
+            accept="image/*"
             placeholder="Default"
             name="default"
             @input="onAvatarChange"

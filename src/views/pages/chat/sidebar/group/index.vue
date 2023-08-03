@@ -18,9 +18,6 @@
         <div class="flex space-x-3 px-6 rtl:space-x-reverse">
           <div class="flex-none">
             <div class="h-10 w-10 rounded-full relative">
-              <span
-                class="status ring-1 ring-white inline-block h-[10px] w-[10px] rounded-full absolute -right-0 top-0"
-              ></span>
               <img
                 :src="getAvatarSrc(item?.avatarUrl)"
                 alt=""
@@ -29,7 +26,7 @@
             </div>
           </div>
           <div class="flex-1 text-start flex">
-            <div class="flex-1">
+            <div class="flex-1 flex items-center">
               <span
                 class="block text-slate-800 dark:text-slate-300 text-sm font-medium mb-[2px]"
                 >{{ item?.name }}</span
